@@ -3,39 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Tarun Asthana</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e141d;
+      --text: #f5f5f5;
+      --muted: #8a93a3;
+      --orange: #F6821F;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .hero img {
+      width: 100%;
+      max-width: 1200px;
+      height: auto;
+      display: block;
+    }
+
+    .site-footer {
+      flex-shrink: 0;
+      padding: 1.5rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .site-footer a {
+      transition: color 0.2s ease;
+    }
+
+    .site-footer a:hover {
+      color: var(--orange);
+    }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 0.6rem;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
+  <main class="hero">
+    <img src="assets/home.svg" alt="Tarun Asthana" />
+  </main>
 
-  <!-- NAV -->
-  <nav>
-    <span class="nav-logo">YN</span>
-    <ul>
-      <li><a href="#">Work</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#" class="btn-nav">Contact</a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-tag">Available for opportunities</p>
-      <h1>Your Name</h1>
-      <p class="hero-sub">Your tagline or role goes here — something sharp and memorable.</p>
-      <div class="hero-actions">
-        <a href="#" class="btn-primary">View My Work</a>
-        <a href="#" class="btn-ghost">Learn More</a>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="blob"></div>
-    </div>
-  </section>
-
+  <footer class="site-footer">
+    <span>Tarun Asthana</span>
+    <a href="mailto:asthana290@gmail.com">asthana290@gmail.com</a>
+  </footer>
 </body>
 </html>
