@@ -272,7 +272,77 @@
 
   <p class="tagline">Built Slow. Built Real.</p>
 
-  <style>
+  <canvas id="dot-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:0;"></canvas>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('dot-canvas');
+      const ctx    = canvas.getContext('2d');
+      const SPACING = 28;
+      const DOT_R   = 1.5;
+
+      let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+      let avOffX = 0, avOffY = 0;
+
+      // Sync with the avatar parallax offsets calculated in the main script
+      window.addEventListener('mousemove', (e) => {
+        mx = e.clientX; my = e.clientY;
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        avOffX = ((e.clientX - cx) / cx) * 12;
+        avOffY = ((e.clientY - cy) / cy) * 8;
+      });
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // Gravitational pull: displaces dot toward source, falls off with distance
+      function warp(dotX, dotY, srcX, srcY, strength, radius) {
+        const dx = dotX - srcX, dy = dotY - srcY;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const pull = strength / (1 + Math.pow(dist / radius, 1.5));
+        return { x: -(dx / dist) * pull, y: -(dy / dist) * pull };
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const W = canvas.width, H = canvas.height;
+
+        // Avatar gravitational center (matches CSS position + parallax offset)
+        const avX = W * 0.38 + avOffX;
+        const avY = H * 0.42 + avOffY;
+
+        for (let gx = SPACING / 2; gx < W; gx += SPACING) {
+          for (let gy = SPACING / 2; gy < H; gy += SPACING) {
+            const a = warp(gx, gy, avX, avY, 32, 170); // avatar gravity
+            const c = warp(gx, gy, mx,  my,  10, 85);  // cursor gravity
+
+            const fx = gx + a.x + c.x;
+            const fy = gy + a.y + c.y;
+
+            // Dots very close to avatar center fade out (swallowed by the well)
+            const dToAv   = Math.hypot(fx - avX, fy - avY);
+            const fadeEdge = Math.min(1, dToAv / 55);
+
+            ctx.globalAlpha = 0.38 * fadeEdge;
+            ctx.fillStyle   = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(fx, fy, DOT_R, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      requestAnimationFrame(draw);
+    })();
+  </script>
+
+<style>
     .welcome .letter {
       display: inline-block;
       opacity: 0;
@@ -303,7 +373,7 @@
     }
 
     function animateOut() {
-      [...letters].reverse().forEach((l, i) =>
+      letters.forEach((l, i) =>
         setTimeout(() => l.classList.remove('visible'), i * delay)
       );
     }
