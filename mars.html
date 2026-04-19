@@ -42,16 +42,16 @@
       white-space: nowrap;
       pointer-events: none;
       z-index: 11;
+      animation: typewriter-loop 5s infinite;
     }
     #mars-hint.hidden { display: none; }
 
-    @keyframes typewriter-in  {
-      from { clip-path: inset(0 100% 0 0); }
-      to   { clip-path: inset(0 0%   0 0); }
-    }
-    @keyframes typewriter-out {
-      from { clip-path: inset(0 0   0 0%);   }
-      to   { clip-path: inset(0 0   0 100%); }
+    @keyframes typewriter-loop {
+      0%   { clip-path: inset(0 100% 0 0);   animation-timing-function: steps(22, end); }
+      38%  { clip-path: inset(0 0%   0 0);   animation-timing-function: steps(1,  end); }
+      55%  { clip-path: inset(0 0    0 0%);  animation-timing-function: steps(22, end); }
+      93%  { clip-path: inset(0 0    0 100%); }
+      100% { clip-path: inset(0 0    0 100%); }
     }
 
     #mars-canvas {
@@ -135,7 +135,7 @@
   <a href="index.html" class="back">← Back</a>
   <canvas id="mars-canvas"></canvas>
   <div id="mars-label">My Work</div>
-  <div id="mars-hint" style="animation: typewriter-in 2s steps(22, end) forwards;">GRAB &amp; SPIN THE MARS</div>
+  <div id="mars-hint">GRAB &amp; SPIN THE MARS</div>
   <div id="proj-grid"></div>
 
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -271,15 +271,12 @@
         canvas.style.cursor = isOpen ? 'grab' : 'pointer';
         const hint = document.getElementById('mars-hint');
         if (isOpen) {
-          hint.style.animation = 'none';
-          hint.offsetWidth;
-          hint.style.animation = 'typewriter-out 1s steps(22, end) forwards';
-          hint.addEventListener('animationend', () => hint.classList.add('hidden'), { once: true });
+          hint.classList.add('hidden');
         } else {
           hint.classList.remove('hidden');
           hint.style.animation = 'none';
           hint.offsetWidth;
-          hint.style.animation = 'typewriter-in 2s steps(22, end) forwards';
+          hint.style.animation = 'typewriter-loop 5s infinite';
         }
         document.getElementById('mars-label').classList.toggle('visible', isOpen);
         setTimeout(() => engine.resize(), 750);
