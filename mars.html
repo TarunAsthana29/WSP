@@ -39,16 +39,16 @@
       letter-spacing: 0.12em;
       text-align: center;
       text-transform: uppercase;
-      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
       pointer-events: none;
       z-index: 11;
-      animation: hint-blink 2s step-start infinite;
     }
     #mars-hint.hidden { display: none; }
 
-    @keyframes hint-blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
+    @keyframes typewriter {
+      from { width: 0; }
+      to   { width: 100%; }
     }
 
     #mars-canvas {
@@ -132,7 +132,7 @@
   <a href="index.html" class="back">← Back</a>
   <canvas id="mars-canvas"></canvas>
   <div id="mars-label">My Work</div>
-  <div id="mars-hint">GRAB &amp; SPIN<br>THE MARS</div>
+  <div id="mars-hint" style="animation: typewriter 2s steps(22, end) forwards;">GRAB &amp; SPIN THE MARS</div>
   <div id="proj-grid"></div>
 
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -266,7 +266,13 @@
         isOpen = !isOpen;
         canvas.classList.toggle('open', isOpen);
         canvas.style.cursor = isOpen ? 'grab' : 'pointer';
-        document.getElementById('mars-hint').classList.toggle('hidden', isOpen);
+        const hint = document.getElementById('mars-hint');
+        hint.classList.toggle('hidden', isOpen);
+        if (!isOpen) {
+          hint.style.animation = 'none';
+          hint.offsetWidth; // reflow to restart
+          hint.style.animation = 'typewriter 2s steps(22, end) forwards';
+        }
         document.getElementById('mars-label').classList.toggle('visible', isOpen);
         setTimeout(() => engine.resize(), 750);
 
