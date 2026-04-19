@@ -28,6 +28,29 @@
     }
     .back:hover { opacity: 0.6; }
 
+    #mars-hint {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: 1.3vw;
+      letter-spacing: 0.12em;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.5;
+      pointer-events: none;
+      z-index: 11;
+      animation: hint-blink 2s step-start infinite;
+    }
+    #mars-hint.hidden { display: none; }
+
+    @keyframes hint-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
     #mars-canvas {
       position: fixed;
       top: 50%; left: 50%;
@@ -89,6 +112,7 @@
 
   <a href="index.html" class="back">← Back</a>
   <canvas id="mars-canvas"></canvas>
+  <div id="mars-hint">GRAB &amp; SPIN<br>THE MARS</div>
   <div id="proj-grid"></div>
 
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -213,7 +237,8 @@
       });
       canvas.addEventListener('pointerup', () => {
         spinning = true;
-        if (!hasDragged) toggleOpen();
+        if (!isOpen) toggleOpen();           // any interaction opens
+        else if (!hasDragged) toggleOpen();  // clean click closes
         pointerStart = null;
       });
 
@@ -221,6 +246,7 @@
         isOpen = !isOpen;
         canvas.classList.toggle('open', isOpen);
         canvas.style.cursor = isOpen ? 'grab' : 'pointer';
+        document.getElementById('mars-hint').classList.toggle('hidden', isOpen);
         setTimeout(() => engine.resize(), 750);
 
         grid.style.pointerEvents = isOpen ? 'all' : 'none';

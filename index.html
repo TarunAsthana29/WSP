@@ -78,6 +78,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      position: relative;
     }
 
     /* Light source 1 — upper left, angled beam */
@@ -251,16 +252,42 @@
       0%, 100% { opacity: 0.65; transform: scale(1);    }
       50%       { opacity: 0.45; transform: scale(1.1); }
     }
+
+    .main-title::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      padding: inherit;
+      background: linear-gradient(
+        100deg,
+        transparent 0%,
+        transparent 20%,
+        rgba(255,255,255,0.85) 40%,
+        transparent 55%,
+        transparent 100%
+      );
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: title-shimmer 3s ease-in-out 1 forwards;
+    }
+
+    @keyframes title-shimmer {
+      0%   { background-position: 150% 0; }
+      100% { background-position: -50% 0; }
+    }
+
   </style>
 </head>
 <body>
 
-  <div class="light-left"></div>
+<div class="light-left"></div>
   <div class="light-right"></div>
 
   <div class="hero">
     <p class="welcome" id="welcome-text">Hey, Welcome !</p>
-    <h1 class="main-title">I'M TARUN</h1>
+    <h1 class="main-title" data-text="I'M TARUN">I'M TARUN</h1>
     <img class="avatar" src="assets/Untitled design.png" alt="Tarun Asthana" />
 
     <div class="bio">
@@ -334,13 +361,19 @@
             const fy = gy + a.y + c.y;
 
             // Dots very close to avatar center fade out (swallowed by the well)
-            const dToAv   = Math.hypot(fx - avX, fy - avY);
+            const dToAv    = Math.hypot(fx - avX, fy - avY);
             const fadeEdge = Math.min(1, dToAv / 55);
 
-            ctx.globalAlpha = 0.38 * fadeEdge;
-            ctx.fillStyle   = '#ffffff';
+            // Brighten dots near cursor
+            const dToCursor = Math.hypot(fx - mx, fy - my);
+            const cursorGlow = Math.max(0, 1 - dToCursor / 90);
+
+            ctx.globalAlpha = (0.15 + cursorGlow * 0.35) * fadeEdge;
+            ctx.fillStyle   = cursorGlow > 0.05
+              ? `rgba(255,${Math.round(200 + cursorGlow * 55)},${Math.round(200 + cursorGlow * 55)},1)`
+              : '#ffffff';
             ctx.beginPath();
-            ctx.arc(fx, fy, DOT_R, 0, Math.PI * 2);
+            ctx.arc(fx, fy, DOT_R + cursorGlow * 0.8, 0, Math.PI * 2);
             ctx.fill();
           }
         }
