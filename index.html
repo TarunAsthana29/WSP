@@ -56,7 +56,7 @@
     }
 
     .main-title {
-      font-size: clamp(3rem, 15vw, 18rem);
+      font-size: 15vw; /* overridden by fitTitle() JS */
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.01em;
@@ -297,6 +297,22 @@
     }
 
     cycle();
+
+    // Fit headline to viewport — only touches font-size, nothing else
+    const title = document.querySelector('.main-title');
+    function fitTitle() {
+      title.style.fontSize = '10px';
+      const maxW = window.innerWidth * 0.94; // 3vw padding each side = 6% total
+      let lo = 10, hi = 500, mid;
+      while (lo < hi - 1) {
+        mid = Math.floor((lo + hi) / 2);
+        title.style.fontSize = mid + 'px';
+        title.scrollWidth <= maxW ? lo = mid : hi = mid;
+      }
+      title.style.fontSize = lo + 'px';
+    }
+    fitTitle();
+    window.addEventListener('resize', fitTitle);
 
   </script>
 </body>
