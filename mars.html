@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Work — Tarun Asthana</title>
+  <style>
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet Heavy.ttf') format('truetype'); font-weight:900; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet Bold.ttf')  format('truetype'); font-weight:700; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet Medium.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet Book.ttf')  format('truetype'); font-weight:400; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; min-height: 100vh;
+      background: #F5EBE0;
+      font-family: 'Garet', sans-serif;
+      overflow: hidden;
+    }
+
+    .back {
+      position: fixed; top: 3vh; left: 3vw;
+      font-size: 0.85vw; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; color: #B85000;
+      z-index: 20; transition: opacity 0.2s;
+    }
+    .back:hover { opacity: 0.6; }
+
+    #mars-canvas {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      cursor: pointer; outline: none; background: transparent;
+      transition: width  0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  height 0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  left   0.7s cubic-bezier(0.34, 1.1, 0.64, 1);
+      z-index: 10;
+    }
+    #mars-canvas.open {
+      width: 340px; height: 340px;
+      left: calc(100vw - 70px - 170px);
+      cursor: grab;
+    }
+
+    /* 5×2 project grid — left side */
+    #proj-grid {
+      position: fixed;
+      top: 50%; transform: translateY(-50%);
+      left: calc(2vw + 70px);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 8px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .proj-btn {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(184,80,0,0.15);
+      border-radius: 14px;
+      cursor: pointer; overflow: hidden;
+      opacity: 0; pointer-events: none;
+      display: flex; flex-direction: column;
+      transform: translateX(-50px);
+      transition: opacity 0.35s ease,
+                  transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+                  background 0.2s;
+    }
+    .proj-btn.visible { opacity: 1; transform: translateX(0); pointer-events: all; }
+    .proj-btn:hover   { background: rgba(255,255,255,0.98); }
+
+    .proj-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex: 0 0 50%;
+    }
+    .proj-num   { font-weight: 900; color: #CC6000; line-height: 1; }
+    .proj-title { font-weight: 500; color: #1a1008; text-align: right; line-height: 1.2; text-transform: uppercase; }
+    .proj-summary {
+      flex: 1; font-weight: 400; color: rgba(26,16,8,0.58); line-height: 1.5;
+      border-top: 1px solid rgba(184,80,0,0.1); overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back">← Back</a>
+  <canvas id="mars-canvas"></canvas>
+  <div id="proj-grid"></div>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script>
+    const PROJECTS = [
+      { num:'01', title:'Brand Identity',    summary:'Visual language for a D2C startup' },
+      { num:'02', title:'Growth Campaign',   summary:'Multi-channel performance strategy' },
+      { num:'03', title:'UI Redesign',       summary:'Mobile-first product experience' },
+      { num:'04', title:'Motion & Story',    summary:'Animated brand narratives' },
+      { num:'05', title:'Market Positioning',summary:'Strategy and messaging framework' },
+      { num:'06', title:'Editorial Design',  summary:'Typography-led print and digital' },
+      { num:'07', title:'Packaging',         summary:'Consumer goods shelf design' },
+      { num:'08', title:'Social System',     summary:'Content architecture and templates' },
+      { num:'09', title:'Product Launch',    summary:'End-to-end go-to-market plan' },
+      { num:'10', title:'Creative Direction',summary:'Campaign concepting and oversight' },
+    ];
+
+    const grid = document.getElementById('proj-grid');
+    PROJECTS.forEach(p => {
+      const btn = document.createElement('div');
+      btn.className = 'proj-btn';
+      btn.innerHTML = `
+        <div class="proj-top">
+          <div class="proj-num">${p.num}</div>
+          <div class="proj-title">${p.title}</div>
+        </div>
+        <div class="proj-summary">${p.summary}</div>`;
+      btn.addEventListener('click', () => console.log('Clicked', p.title));
+      grid.appendChild(btn);
+    });
+
+    const allBtns = grid.querySelectorAll('.proj-btn');
+
+    // Size grid and cards from viewport
+    function sizeGrid() {
+      const W   = window.innerWidth;
+      const H   = window.innerHeight;
+      const GAP = 8;
+      const MARS_OPEN = 340;
+      const MARS_RIGHT_MARGIN = W * 0.05;   // 5vw
+      const LEFT_MARGIN = W * 0.02 + 70;
+      const GRID_GAP_FROM_MARS = 60;
+
+      const gridW = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
+      const gridH = H * 0.84;
+
+      const cardW = (gridW - GAP) / 2;
+      const cardH = (gridH - 4 * GAP) / 5;
+
+      grid.style.width  = gridW + 'px';
+      grid.style.height = gridH + 'px';
+
+      const pad    = cardH * 0.10;
+      const numSz  = cardH * 0.30;
+      const titSz  = cardH * 0.11 + 7;
+      const sumSz  = cardH * 0.10;
+
+      allBtns.forEach(b => {
+        b.style.borderRadius = (cardH * 0.08) + 'px';
+      });
+      grid.querySelectorAll('.proj-top').forEach(t => {
+        t.style.padding = `${pad}px ${pad}px ${pad * 0.4}px`;
+      });
+      grid.querySelectorAll('.proj-num').forEach(n => {
+        n.style.fontSize = numSz + 'px';
+      });
+      grid.querySelectorAll('.proj-title').forEach(t => {
+        t.style.fontSize = titSz + 'px';
+      });
+      grid.querySelectorAll('.proj-summary').forEach(s => {
+        s.style.padding  = `${pad * 0.6}px ${pad}px`;
+        s.style.fontSize = sumSz + 'px';
+      });
+    }
+    sizeGrid();
+
+    // Babylon
+    const canvas = document.getElementById('mars-canvas');
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, adaptToDeviceRatio: true });
+    const scene  = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+    const camera = new BABYLON.ArcRotateCamera('cam', -Math.PI / 2, Math.PI / 2, 3, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerBetaLimit = Math.PI / 2;
+    camera.upperBetaLimit = Math.PI / 2;
+    camera.inputs.removeByType('ArcRotateCameraMouseWheelInput');
+    camera.inputs.removeByType('ArcRotateCameraMultiTouchInput');
+    canvas.addEventListener('wheel',     e => e.preventDefault(), { passive: false });
+    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+    new BABYLON.HemisphericLight('hem', new BABYLON.Vector3(0, 1, 0), scene).intensity = 1.2;
+    const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, -1, -2), scene);
+    sun.intensity = 2;
+
+    BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'mars.glb', scene).then(({ meshes }) => {
+      const root = meshes[0];
+      const { min, max } = root.getHierarchyBoundingVectors(true);
+      const size = max.subtract(min);
+      camera.target = min.add(size.scale(0.5));
+      camera.radius = Math.max(size.x, size.y, size.z) * 1.6;
+
+      let spinning = true;
+      const FAST = 0.06, SLOW = 0.0015, DECAY = 2200, t0 = performance.now();
+      scene.registerBeforeRender(() => {
+        if (!spinning) return;
+        const p = Math.min((performance.now() - t0) / DECAY, 1);
+        camera.alpha += FAST + (SLOW - FAST) * p;
+      });
+
+      let isOpen = false, pointerStart = null, hasDragged = false;
+
+      canvas.addEventListener('pointerdown', e => {
+        pointerStart = { x: e.clientX, y: e.clientY };
+        hasDragged = false;
+        spinning = false;
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5)
+          hasDragged = true;
+      });
+      canvas.addEventListener('pointerup', () => {
+        spinning = true;
+        if (!hasDragged) toggleOpen();
+        pointerStart = null;
+      });
+
+      function toggleOpen() {
+        isOpen = !isOpen;
+        canvas.classList.toggle('open', isOpen);
+        canvas.style.cursor = isOpen ? 'grab' : 'pointer';
+        setTimeout(() => engine.resize(), 750);
+
+        grid.style.pointerEvents = isOpen ? 'all' : 'none';
+        allBtns.forEach((btn, i) => {
+          const delay = isOpen ? i * 50 : (allBtns.length - 1 - i) * 30;
+          setTimeout(() => btn.classList.toggle('visible', isOpen), delay);
+        });
+      }
+    });
+
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener('resize', () => { engine.resize(); sizeGrid(); });
+  </script>
+</body>
+</html>

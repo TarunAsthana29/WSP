@@ -7,17 +7,28 @@
   <style>
     @font-face {
       font-family: 'Garet';
-      src: url('assets/garet/Garet-Heavy.woff2') format('woff2'),
-           url('assets/garet/Garet-Heavy.woff')  format('woff');
-      font-weight: 700 900;
-      font-style: normal;
+      src: url('assets/Garet-Font/Garet Heavy.ttf') format('truetype');
+      font-weight: 900;
     }
     @font-face {
       font-family: 'Garet';
-      src: url('assets/garet/Garet-Book.woff2') format('woff2'),
-           url('assets/garet/Garet-Book.woff')  format('woff');
+      src: url('assets/Garet-Font/Garet Bold.ttf') format('truetype');
+      font-weight: 700;
+    }
+    @font-face {
+      font-family: 'Garet';
+      src: url('assets/Garet-Font/Garet Medium.ttf') format('truetype');
+      font-weight: 500;
+    }
+    @font-face {
+      font-family: 'Garet';
+      src: url('assets/Garet-Font/Garet Book.ttf') format('truetype');
       font-weight: 400;
-      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Garet';
+      src: url('assets/Garet-Font/Garet Light.ttf') format('truetype');
+      font-weight: 300;
     }
   </style>
   <style>
@@ -205,8 +216,7 @@
       pointer-events: none;
       filter: drop-shadow(0 20px 50px rgba(0,0,0,0.7));
       animation: avatar-float 4s ease-in-out infinite;
-      opacity: 0;
-      animation-fill-mode: forwards;
+      opacity: 1;
     }
 
     @keyframes avatar-float {
@@ -222,9 +232,9 @@
 
     .tagline {
       position: fixed;
-      bottom: 4vh;
+      bottom: calc(4vh + 20px);
       left: 4vw;
-      font-size: 0.9vw;
+      font-size: 1.1vw;
       font-weight: 400;
       font-style: italic;
       color: #ffffff;
@@ -261,7 +271,7 @@
 
   <div class="btn-group">
     <div class="btn-wrap">
-      <a href="#" class="btn btn-orange">GO TO MARS &nbsp;→</a>
+      <a href="mars.html" class="btn btn-orange">GO TO MARS &nbsp;→</a>
       <span class="btn-label orange-label">my work</span>
     </div>
     <div class="btn-wrap">
@@ -406,22 +416,9 @@
     fitTitle();
     window.addEventListener('resize', fitTitle);
 
-    // Avatar: entry animation then float + mouse parallax
+    // Avatar: float + mouse parallax
     const avatar = document.querySelector('.avatar');
-    avatar.style.animation = 'none';
-    avatar.style.opacity = '0';
-
-    // Entry
-    setTimeout(() => {
-      avatar.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-      avatar.style.opacity = '1';
-      avatar.style.transform = 'translateX(-50%) translateY(0px)';
-      // Start float after entry
-      setTimeout(() => {
-        avatar.style.transition = '';
-        avatar.style.animation = 'avatar-float 4s ease-in-out infinite';
-      }, 900);
-    }, 400);
+    avatar.style.animation = 'avatar-float 4s ease-in-out infinite';
 
     // Mouse parallax
     let floatY = 0;
