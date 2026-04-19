@@ -250,6 +250,7 @@
         pointerStart = { x: e.clientX, y: e.clientY };
         hasDragged = false;
         spinning = false;
+        if (!isOpen) toggleOpen();           // open immediately on any touch/drag/click
       });
       canvas.addEventListener('pointermove', e => {
         if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5)
@@ -257,8 +258,7 @@
       });
       canvas.addEventListener('pointerup', () => {
         spinning = true;
-        if (!isOpen) toggleOpen();           // any interaction opens
-        else if (!hasDragged) toggleOpen();  // clean click closes
+        if (isOpen && !hasDragged) toggleOpen();  // clean click while open → close
         pointerStart = null;
       });
 
