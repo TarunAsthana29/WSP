@@ -56,11 +56,11 @@
     }
 
     .main-title {
-      font-size: clamp(3rem, 15vw, 18rem);
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.01em;
       white-space: nowrap;
+      width: 100%;
       padding: 0 3vw;
       margin-top: -0.05em;
       background: linear-gradient(to right, #FF8329 0%, #F5A070 28%, #FAD4B2 62%, #FFF0E6 100%);
@@ -297,6 +297,22 @@
     }
 
     cycle();
+
+    // Auto-fit title to always fill viewport width
+    const title = document.querySelector('.main-title');
+    function fitTitle() {
+      title.style.fontSize = '10px';
+      const max = (window.innerWidth * 0.94);
+      let lo = 10, hi = 400, mid;
+      while (lo < hi - 1) {
+        mid = Math.floor((lo + hi) / 2);
+        title.style.fontSize = mid + 'px';
+        title.scrollWidth <= max ? lo = mid : hi = mid;
+      }
+      title.style.fontSize = lo + 'px';
+    }
+    fitTitle();
+    window.addEventListener('resize', fitTitle);
   </script>
 </body>
 </html>
