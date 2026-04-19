@@ -76,8 +76,8 @@
       left: -12%;
       width: 55vw;
       height: 70vh;
-      background: radial-gradient(ellipse at 15% 30%, #c9907a 0%, #8b5a48 20%, transparent 65%);
-      opacity: 0.5;
+      background: radial-gradient(ellipse at 15% 30%, #e8a882 0%, #b06040 20%, transparent 65%);
+      opacity: 0.65;
       pointer-events: none;
       border-radius: 50%;
       transform: rotate(-20deg);
@@ -92,8 +92,8 @@
       right: -8%;
       width: 45vw;
       height: 55vh;
-      background: radial-gradient(ellipse at 60% 70%, #c9907a 0%, #8b5a48 22%, transparent 65%);
-      opacity: 0.5;
+      background: radial-gradient(ellipse at 60% 70%, #e8a882 0%, #b06040 22%, transparent 65%);
+      opacity: 0.65;
       pointer-events: none;
       border-radius: 50%;
       animation: glow-right 7s ease-in-out infinite;
@@ -186,7 +186,7 @@
 
     .avatar {
       position: absolute;
-      top: calc(8vh + 100px);
+      top: 23vh;
       left: 38%;
       transform: translateX(-50%);
       width: 22vw;
@@ -223,13 +223,13 @@
     }
 
     @keyframes glow-left {
-      0%, 100% { opacity: 0.5; transform: rotate(-20deg) scale(1);   }
-      50%       { opacity: 0.35; transform: rotate(-20deg) scale(1.08); }
+      0%, 100% { opacity: 0.65; transform: rotate(-20deg) scale(1);   }
+      50%       { opacity: 0.45; transform: rotate(-20deg) scale(1.08); }
     }
 
     @keyframes glow-right {
-      0%, 100% { opacity: 0.5; transform: scale(1);    }
-      50%       { opacity: 0.38; transform: scale(1.1); }
+      0%, 100% { opacity: 0.65; transform: scale(1);    }
+      50%       { opacity: 0.45; transform: scale(1.1); }
     }
   </style>
 </head>
