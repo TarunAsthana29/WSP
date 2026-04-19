@@ -40,15 +40,18 @@
       text-align: center;
       text-transform: uppercase;
       white-space: nowrap;
-      overflow: hidden;
       pointer-events: none;
       z-index: 11;
     }
     #mars-hint.hidden { display: none; }
 
-    @keyframes typewriter {
-      from { width: 0; }
-      to   { width: 100%; }
+    @keyframes typewriter-in  {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0%   0 0); }
+    }
+    @keyframes typewriter-out {
+      from { clip-path: inset(0 0   0 0%);   }
+      to   { clip-path: inset(0 0   0 100%); }
     }
 
     #mars-canvas {
@@ -132,7 +135,7 @@
   <a href="index.html" class="back">← Back</a>
   <canvas id="mars-canvas"></canvas>
   <div id="mars-label">My Work</div>
-  <div id="mars-hint" style="animation: typewriter 2s steps(22, end) forwards;">GRAB &amp; SPIN THE MARS</div>
+  <div id="mars-hint" style="animation: typewriter-in 2s steps(22, end) forwards;">GRAB &amp; SPIN THE MARS</div>
   <div id="proj-grid"></div>
 
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -267,11 +270,16 @@
         canvas.classList.toggle('open', isOpen);
         canvas.style.cursor = isOpen ? 'grab' : 'pointer';
         const hint = document.getElementById('mars-hint');
-        hint.classList.toggle('hidden', isOpen);
-        if (!isOpen) {
+        if (isOpen) {
           hint.style.animation = 'none';
-          hint.offsetWidth; // reflow to restart
-          hint.style.animation = 'typewriter 2s steps(22, end) forwards';
+          hint.offsetWidth;
+          hint.style.animation = 'typewriter-out 1s steps(22, end) forwards';
+          hint.addEventListener('animationend', () => hint.classList.add('hidden'), { once: true });
+        } else {
+          hint.classList.remove('hidden');
+          hint.style.animation = 'none';
+          hint.offsetWidth;
+          hint.style.animation = 'typewriter-in 2s steps(22, end) forwards';
         }
         document.getElementById('mars-label').classList.toggle('visible', isOpen);
         setTimeout(() => engine.resize(), 750);
