@@ -256,7 +256,7 @@
       });
       canvas.addEventListener('pointermove', e => {
         if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5) {
-          if (!hasDragged && !isOpen) toggleOpen();  // open only on drag/spin
+          if (!hasDragged) toggleOpen();  // any spin toggles open/close
           hasDragged = true;
         }
       });
