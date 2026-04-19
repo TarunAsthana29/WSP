@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarun Asthana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:     #F8F5F0;
+  --bg2:    #EDE9E2;
+  --text:   #1a1a1a;
+  --muted:  #888;
+  --muted2: #555;
+  --border: rgba(0,0,0,0.09);
+  --orange: #F6821F;
+  --rw: 300px;
+  --rh: 420px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* subtle ambient glow */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 75%, rgba(246,130,31,0.06) 0%, transparent 55%),
+    radial-gradient(circle at 82% 25%, rgba(37,99,235,0.04) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.site-header {
+  flex-shrink: 0;
+  padding: 2.2rem 5% 1.2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.name-display {
+  font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 5.5vw, 5.2rem);
+  color: var(--orange);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.name-sub {
+  font-weight: 400;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-top: 0.7rem;
+}
+
+.header-line {
+  width: 50px;
+  height: 2px;
+  background: var(--orange);
+  margin: 1rem auto 0;
+  opacity: 0.4;
+}
+
+/* ── MAIN THREE-COLUMN ─────────────────────────────── */
+.main-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr var(--rw) 1fr;
+  align-items: center;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── LEFT PANEL ─────────────────────────────────────── */
+.left-panel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem 1rem 4%;
+  overflow: hidden;
+}
+
+.panel-body {
+  width: 100%;
+  max-height: var(--rh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.12) transparent;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-track { background: transparent; }
+.panel-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 4px; }
+
+/* empty hint */
+.panel-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  opacity: 0.35;
+  user-select: none;
+  padding: 3rem 0;
+}
+
+.ph-arrow {
+  font-size: 2rem;
+  animation: sway 2.5s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%,100% { transform: translateX(0); }
+  50%      { transform: translateX(-10px); }
+}
+
+.panel-hint p {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── PANEL CONTENT ─────────────────────────────────── */
+.p-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.p-num {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.p-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.55rem;
+  letter-spacing: -0.02em;
+  border-bottom: 3px solid;
+  padding-bottom: 2px;
+  line-height: 1.1;
+}
+
+.p-intro {
+  font-size: 0.9rem;
+  color: var(--muted2);
+  line-height: 1.75;
+  margin-bottom: 1.3rem;
+}
+
+.p-intro strong { color: var(--text); font-weight: 600; }
+
+/* education */
+.p-edu { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.3rem; }
+
+.pei { display: flex; gap: 1rem; align-items: flex-start; }
+
+.pei-y {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.68rem;
+  color: var(--orange);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  padding-top: 2px;
+  min-width: 30px;
+}
+
+.pei-d { font-size: 0.86rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+.pei-i { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+
+/* chips */
+.p-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+
+.p-chips span {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-size: 0.72rem;
+  color: var(--muted2);
+  font-weight: 500;
+  background: rgba(0,0,0,0.03);
+}
+
+/* work */
+.pw-list { display: flex; flex-direction: column; gap: 0; }
+
+.pw-item {
+  display: flex;
+  gap: 0.9rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pw-item:last-child { border-bottom: none; }
+
+.pw-date {
+  font-size: 0.65rem;
+  font-family: 'Courier New', monospace;
+  color: var(--muted);
+  white-space: nowrap;
+  padding-top: 3px;
+  min-width: 68px;
+}
+
+.pw-role { font-size: 0.86rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+.pw-org  { font-size: 0.76rem; color: #2563EB; font-weight: 600; margin-top: 1px; }
+.pw-desc { font-size: 0.74rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+/* skills */
+.ps-groups { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.psg-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
+}
+
+.psg-tags { display: flex; flex-wrap: wrap; gap: 0.38rem; }
+
+.psg-tags span {
+  padding: 0.26rem 0.68rem;
+  background: rgba(5,150,105,0.07);
+  border: 1px solid rgba(5,150,105,0.18);
+  border-radius: 6px;
+  font-size: 0.73rem;
+  color: var(--muted2);
+  font-weight: 500;
+}
+
+/* wins */
+.pwn-list { display: flex; flex-direction: column; gap: 0; }
+
+.pwn-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pwn-item:last-child { border-bottom: none; }
+
+.pwn-n {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  min-width: 42px;
+  text-align: right;
+  line-height: 1.2;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.pwn-t { font-size: 0.86rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+.pwn-s { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+/* contact */
+.p-email {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #DC2626;
+  border-bottom: 2px solid #DC2626;
+  padding-bottom: 2px;
+  margin-bottom: 1.3rem;
+  transition: opacity 0.2s;
+}
+
+.p-email:hover { opacity: 0.7; }
+
+.p-contact-info { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.3rem; }
+
+.pci { display: flex; align-items: center; gap: 0.65rem; font-size: 0.83rem; color: var(--muted2); }
+
+.pci-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── CENTER: NAV RECTANGLE ─────────────────────────── */
+.rect-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-rect {
+  position: relative;
+  width: var(--rw);
+  height: var(--rh);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px  rgba(0,0,0,0.07),
+    0 10px 28px rgba(0,0,0,0.11),
+    0 22px 60px rgba(0,0,0,0.08);
+}
+
+/* ── BUTTONS ─────────────────────────────────────────
+   All 5 buttons are position:absolute covering the full 300×420px.
+   clip-path slices each into its diagonal band.
+   Section boundaries (left edge px): 0, 84, 168, 252, 336, 420
+   Right edge = left + 14px (diagonal offset)
+────────────────────────────────────────────────────── */
+.nb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: filter 0.2s;
+}
+
+.nb:focus-visible { outline: 3px solid rgba(255,255,255,0.7); outline-offset: -4px; }
+
+.nb-1 { background: #F6821F; clip-path: polygon(0 0,   100% 0,   100% 98px,  0 84px);  z-index: 5; }
+.nb-2 { background: #2563EB; clip-path: polygon(0 84px, 100% 98px, 100% 182px, 0 168px); z-index: 4; }
+.nb-3 { background: #059669; clip-path: polygon(0 168px,100% 182px,100% 266px, 0 252px); z-index: 3; }
+.nb-4 { background: #7C3AED; clip-path: polygon(0 252px,100% 266px,100% 350px, 0 336px); z-index: 2; }
+.nb-5 { background: #DC2626; clip-path: polygon(0 336px,100% 350px,100% 420px, 0 420px); z-index: 1; }
+
+.nb:hover { filter: brightness(1.13); }
+.nb.nb-active { filter: brightness(1.2); }
+
+/* ── BUTTON CONTENT ─────────────────────────────────
+   nb-content is positioned to the vertical center of each slice.
+   Slice centers (midpoint of left-edge boundaries):
+   Sec1: 42px  Sec2: 126px  Sec3: 210px  Sec4: 294px  Sec5: 378px
+────────────────────────────────────────────────────── */
+.nb-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  pointer-events: none;
+}
+
+.nb-1 .nb-content { top: 24px; }
+.nb-2 .nb-content { top: 108px; }
+.nb-3 .nb-content { top: 192px; }
+.nb-4 .nb-content { top: 276px; }
+.nb-5 .nb-content { top: 360px; }
+
+.nb-left { display: flex; flex-direction: column; gap: 2px; }
+
+.nb-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.nb-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.2);
+}
+
+.nb-arrow {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  transition: transform 0.2s, color 0.2s;
+}
+
+.nb:hover .nb-arrow { transform: translateX(5px); color: #fff; }
+.nb.nb-active .nb-arrow { transform: translateX(7px); color: #fff; }
+
+/* ── RIGHT COLUMN ───────────────────────────────────── */
+.right-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 3rem;
+  height: 100%;
+}
+
+.right-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+  align-items: flex-start;
+}
+
+.ri-vert {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0.42;
+}
+
+.ri-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.ri-stat { display: flex; flex-direction: column; gap: 3px; }
+
+.ri-n {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--orange);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ri-l {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+
+.ri-year {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.4;
+}
+
+/* ── MOBILE ─────────────────────────────────────────── */
+@media (max-width: 860px) {
+  html, body { overflow: auto; height: auto; }
+
+  .name-display {
+    font-size: clamp(1.5rem, 8vw, 3rem);
+    letter-spacing: 0.15em;
+    white-space: normal;
+  }
+
+  .main-area {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    padding: 1.5rem 5% 3rem;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .left-panel { order: 2; height: auto; padding: 0; }
+  .panel-body  { max-height: none; }
+  .rect-col    { order: 1; justify-content: center; }
+  .right-col   { order: 3; padding: 0; justify-content: center; }
+
+  .right-inner { flex-direction: row; flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+  .ri-vert     { display: none; }
+}
+</style>
+</head>
+<body>
+
+  <!-- ── NAME ─────────────────────────────────────── -->
+  <header class="site-header">
+    <h1 class="name-display">TARUN&nbsp;&nbsp;ASTHANA</h1>
+    <p class="name-sub">Creative &nbsp;&middot;&nbsp; Reflective &nbsp;&middot;&nbsp; Purposeful</p>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- ── MAIN ─────────────────────────────────────── -->
+  <main class="main-area">
+
+    <!-- LEFT: content -->
+    <div class="left-panel">
+      <div class="panel-body" id="panelBody">
+        <div class="panel-hint">
+          <div class="ph-arrow">&#8592;</div>
+          <p>Select a section</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: rectangle -->
+    <div class="rect-col">
+      <div class="nav-rect">
+
+        <button class="nb nb-1" onclick="showPanel('about',this)">
+          <div class="nb-content">
+            <div class="nb-left"><span class="nb-num">01</span><span class="nb-label">About Me</span></div>
+            <span class="nb-arrow">&#8594;</span>
+          </div>
+        </button>
+
+        <button class="nb nb-2" onclick="showPanel('work',this)">
+          <div class="nb-content">
+            <div class="nb-left"><span class="nb-num">02</span><span class="nb-label">My Work</span></div>
+            <span class="nb-arrow">&#8594;</span>
+          </div>
+        </button>
+
+        <button class="nb nb-3" onclick="showPanel('skills',this)">
+          <div class="nb-content">
+            <div class="nb-left"><span class="nb-num">03</span><span class="nb-label">Skills</span></div>
+            <span class="nb-arrow">&#8594;</span>
+          </div>
+        </button>
+
+        <button class="nb nb-4" onclick="showPanel('wins',this)">
+          <div class="nb-content">
+            <div class="nb-left"><span class="nb-num">04</span><span class="nb-label">Wins</span></div>
+            <span class="nb-arrow">&#8594;</span>
+          </div>
+        </button>
+
+        <button class="nb nb-5" onclick="showPanel('contact',this)">
+          <div class="nb-content">
+            <div class="nb-left"><span class="nb-num">05</span><span class="nb-label">Contact</span></div>
+            <span class="nb-arrow">&#8594;</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: ambient info -->
+    <div class="right-col">
+      <div class="right-inner">
+        <div class="ri-vert">MICA &nbsp;·&nbsp; AHMEDABAD</div>
+        <div class="ri-stats">
+          <div class="ri-stat"><span class="ri-n">34K</span><span class="ri-l">YouTube Views</span></div>
+          <div class="ri-stat"><span class="ri-n">AIR 25</span><span class="ri-l">NID Design Test</span></div>
+          <div class="ri-stat"><span class="ri-n">35+</span><span class="ri-l">Brands</span></div>
+        </div>
+        <div class="ri-year">Class of 2027</div>
+      </div>
+    </div>
+
+  </main>
+
+<script>
+const PANELS = {
+  about: `
+    <div class="p-head">
+      <span class="p-num" style="color:#F6821F">01</span>
+      <h2 class="p-title" style="border-color:#F6821F">About Me</h2>
+    </div>
+    <p class="p-intro">PGDM student at <strong>MICA, Ahmedabad</strong> — The School of Ideas. Visual Arts graduate bridging fine art, brand strategy, and psychology.</p>
+    <div class="p-edu">
+      <div class="pei"><span class="pei-y">2027</span><div><div class="pei-d">PGDM</div><div class="pei-i">MICA, Ahmedabad</div></div></div>
+      <div class="pei"><span class="pei-y">2025</span><div><div class="pei-d">PG Diploma — Psychological Counselling</div><div class="pei-i">Symbiosis Centre for Distance Learning &middot; 78.38%</div></div></div>
+      <div class="pei"><span class="pei-y">2024</span><div><div class="pei-d">Bachelor of Visual Arts</div><div class="pei-i">University of Lucknow &middot; 73.45%</div></div></div>
+      <div class="pei"><span class="pei-y">2019</span><div><div class="pei-d">Class XII — CBSE &middot; 89.17%</div><div class="pei-i">St. Anjani's Public School, Lucknow</div></div></div>
+    </div>
+    <div class="p-chips"><span>Painting</span><span>Photography</span><span>Swimming</span><span>Aquascaping</span></div>`,
+
+  work: `
+    <div class="p-head">
+      <span class="p-num" style="color:#2563EB">02</span>
+      <h2 class="p-title" style="border-color:#2563EB">My Work</h2>
+    </div>
+    <div class="pw-list">
+      <div class="pw-item"><span class="pw-date">2025–26</span><div><div class="pw-role">Member, MICANVAS</div><div class="pw-org">MICA, Ahmedabad</div><div class="pw-desc">UGC campaigns for 35+ brands &middot; omnichannel activations &middot; 28-member team</div></div></div>
+      <div class="pw-item"><span class="pw-date">Jul–Aug '24</span><div><div class="pw-role">Fine Artist</div><div class="pw-org">Arif Industries (P) Ltd</div><div class="pw-desc">4 original paintings inspired by a reputed artist's technique</div></div></div>
+      <div class="pw-item"><span class="pw-date">Sep '23–Jan '24</span><div><div class="pw-role">Senior Graphic Designer</div><div class="pw-org">Natkhat Media Pvt Ltd</div><div class="pw-desc">Visual campaigns for 12 clients &middot; brand consistency across platforms</div></div></div>
+      <div class="pw-item"><span class="pw-date">Sep–Dec '23</span><div><div class="pw-role">Workshop Curator</div><div class="pw-org">Personality Development Programme</div><div class="pw-desc">86-day workshop &middot; 40+ students &middot; Double Diamond Framework</div></div></div>
+      <div class="pw-item"><span class="pw-date">Mar–Nov '23</span><div><div class="pw-role">Fine Artist</div><div class="pw-org">Arif Industries (P) Ltd</div><div class="pw-desc">Site photography &amp; visual interpretation of 16 buildings</div></div></div>
+      <div class="pw-item"><span class="pw-date">May '21–Jul '23</span><div><div class="pw-role">Creator &amp; Educator</div><div class="pw-org">YouTube Channel</div><div class="pw-desc">34,920 views &middot; 664 hours watch time &middot; educational art content</div></div></div>
+    </div>`,
+
+  skills: `
+    <div class="p-head">
+      <span class="p-num" style="color:#059669">03</span>
+      <h2 class="p-title" style="border-color:#059669">Skills</h2>
+    </div>
+    <div class="ps-groups">
+      <div class="psg"><div class="psg-label">Design &amp; Visual Arts</div><div class="psg-tags"><span>Adobe Photoshop</span><span>Illustrator</span><span>Lightroom</span><span>Canva</span><span>Fine Art</span><span>Typography</span></div></div>
+      <div class="psg"><div class="psg-label">Content &amp; Media</div><div class="psg-tags"><span>Video Editing (VN)</span><span>Photography</span><span>Social Media</span><span>UGC Campaigns</span><span>Storytelling</span></div></div>
+      <div class="psg"><div class="psg-label">Strategy &amp; Leadership</div><div class="psg-tags"><span>Brand Communications</span><span>Double Diamond</span><span>Event Management</span><span>MS PowerPoint</span><span>Team Leadership</span></div></div>
+    </div>`,
+
+  wins: `
+    <div class="p-head">
+      <span class="p-num" style="color:#7C3AED">04</span>
+      <h2 class="p-title" style="border-color:#7C3AED">Wins</h2>
+    </div>
+    <div class="pwn-list">
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">AIR 25</div><div><div class="pwn-t">NID Design Aptitude Test (Mains)</div><div class="pwn-s">National Institute of Design, Ahmedabad &middot; 2025</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">3rd</div><div><div class="pwn-t">Samvedna Art Competition</div><div class="pwn-s">Sri Aurobindo College, New Delhi &middot; 2021</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">2703</div><div><div class="pwn-t">AIR — JEE Mains Paper 2</div><div class="pwn-s">2020</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">&#9733;</div><div><div class="pwn-t">Batohi Art Exhibition</div><div class="pwn-s">Lucknow &middot; 2024</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">&#9733;</div><div><div class="pwn-t">Mobiwalk Photography Prize</div><div class="pwn-s">Nawab Wajid Ali Shah Zoo, Lucknow &middot; 2021</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">&#9733;</div><div><div class="pwn-t">Leadership Skills — IIM Ahmedabad, Coursera</div><div class="pwn-s">2024</div></div></div>
+      <div class="pwn-item"><div class="pwn-n" style="color:#7C3AED">&#9733;</div><div><div class="pwn-t">Co-Founder, Fine Arts Cultural Club</div><div class="pwn-s">First cultural club at College of Arts &amp; Crafts, Lucknow</div></div></div>
+    </div>`,
+
+  contact: `
+    <div class="p-head">
+      <span class="p-num" style="color:#DC2626">05</span>
+      <h2 class="p-title" style="border-color:#DC2626">Contact</h2>
+    </div>
+    <p class="p-intro">Seeking summer internship opportunities in brand strategy, creative direction, or graphic design.</p>
+    <a href="mailto:asthana290@gmail.com" class="p-email">asthana290@gmail.com</a>
+    <div class="p-contact-info">
+      <div class="pci"><span class="pci-dot" style="background:#DC2626"></span><span>Ahmedabad / Lucknow, India</span></div>
+      <div class="pci"><span class="pci-dot" style="background:#DC2626"></span><span>MICA, Ahmedabad &middot; PGDM 2027</span></div>
+      <div class="pci"><span class="pci-dot" style="background:#DC2626"></span><span>English &middot; Hindi</span></div>
+    </div>
+    <div class="p-chips"><span>Brand Strategy</span><span>Creative Direction</span><span>Graphic Design</span><span>Art Direction</span></div>`
+};
+
+let active = null;
+
+function showPanel(key, btn) {
+  const body = document.getElementById('panelBody');
+  const allBtns = document.querySelectorAll('.nb');
+
+  if (active === key) {
+    active = null;
+    allBtns.forEach(b => b.classList.remove('nb-active'));
+    body.style.transition = 'opacity 0.25s, transform 0.25s';
+    body.style.opacity = '0';
+    body.style.transform = 'translateX(-12px)';
+    setTimeout(() => {
+      body.innerHTML = '<div class="panel-hint"><div class="ph-arrow">&#8592;</div><p>Select a section</p></div>';
+      body.style.transition = 'none';
+      body.style.opacity = '1';
+      body.style.transform = 'translateX(0)';
+    }, 260);
+    return;
+  }
+
+  active = key;
+  allBtns.forEach(b => b.classList.remove('nb-active'));
+  btn.classList.add('nb-active');
+
+  body.style.transition = 'opacity 0.2s, transform 0.2s';
+  body.style.opacity = '0';
+  body.style.transform = 'translateX(-14px)';
+
+  setTimeout(() => {
+    body.innerHTML = PANELS[key];
+    body.style.transition = 'opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+    body.style.opacity = '1';
+    body.style.transform = 'translateX(0)';
+  }, 210);
+}
+</script>
+</body>
+</html>
