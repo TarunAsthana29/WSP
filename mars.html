@@ -253,15 +253,15 @@
         pointerStart = { x: e.clientX, y: e.clientY };
         hasDragged = false;
         spinning = false;
-        if (!isOpen) toggleOpen();           // open immediately on any touch/drag/click
       });
       canvas.addEventListener('pointermove', e => {
-        if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5)
+        if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5) {
+          if (!hasDragged && !isOpen) toggleOpen();  // open only on drag/spin
           hasDragged = true;
+        }
       });
       canvas.addEventListener('pointerup', () => {
         spinning = true;
-        if (isOpen && !hasDragged) toggleOpen();  // clean click while open → close
         pointerStart = null;
       });
 
