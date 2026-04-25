@@ -67,13 +67,13 @@
     }
     #mars-canvas.open {
       width: 340px; height: 340px;
-      left: calc(100vw - 70px - 170px);
+      left: calc(100vw - 50px - 170px);
       cursor: grab;
     }
 
     #mars-label {
       position: fixed;
-      left: calc(100vw - 70px - 170px);
+      left: calc(100vw - 50px - 170px);
       transform: translateX(-50%);
       top: calc(50% - 170px - 3.8vw - 14px);
       font-family: 'Garet', sans-serif;
@@ -90,16 +90,64 @@
     }
     #mars-label.visible { opacity: 1; }
 
-    /* 5×2 project grid — left side */
-    #proj-grid {
+    /* ── Project wrapper — top aligned ── */
+    #proj-wrap {
       position: fixed;
-      top: 50%; transform: translateY(-50%);
-      left: calc(2vw + 70px);
+      top: 8vh;
+      left: calc(2vw + 140px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* ── Side panel — vertical category nav ── */
+    #side-panel {
+      position: fixed;
+      left: 1.2vw;
+      top: calc(50% - 135px);
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      width: 110px;
+      z-index: 15;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #side-panel.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .side-pill {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: calc(0.55vw + 3px);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      width: 100%;
+      text-align: center;
+      padding: 10px 8px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(184,80,0,0.3);
+      background: rgba(255,255,255,0.6);
+      color: #B85000;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+    }
+    .side-pill:hover  { background: rgba(255,131,41,0.15); border-color: #FF8329; }
+    .side-pill.active { background: #FF8329; color: #fff; border-color: #FF8329; }
+
+    /* ── Project grid ── */
+    #proj-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(5, 1fr);
       gap: 8px;
-      z-index: 5;
       pointer-events: none;
     }
 
@@ -108,92 +156,369 @@
       border: 1px solid rgba(184,80,0,0.15);
       border-radius: 14px;
       cursor: pointer; overflow: hidden;
-      opacity: 0; pointer-events: none;
+      opacity: 0;
+      pointer-events: none;
       display: flex; flex-direction: column;
-      transform: translateX(-50px);
-      transition: opacity 0.35s ease,
-                  transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+      transform: translateX(-30px) scale(0.95);
+      transition: opacity 0.28s ease,
+                  transform 0.42s cubic-bezier(0.34, 1.2, 0.64, 1),
                   background 0.2s;
     }
-    .proj-btn.visible { opacity: 1; transform: translateX(0); pointer-events: all; }
-    .proj-btn:hover   { background: rgba(255,255,255,0.98); }
+    .proj-btn.visible  { opacity: 1; transform: translateX(0) scale(1); pointer-events: all; }
+    .proj-btn:hover    { background: rgba(255,255,255,0.98); }
 
     .proj-top {
       display: flex; justify-content: space-between; align-items: flex-start;
       flex: 0 0 50%;
     }
-    .proj-num   { font-weight: 900; color: #CC6000; line-height: 1; }
-    .proj-title { font-weight: 500; color: #1a1008; text-align: right; line-height: 1.2; text-transform: uppercase; }
+    .proj-num     { font-weight: 900; color: #CC6000; line-height: 1; }
+    .proj-title   { font-weight: 500; color: #1a1008; text-align: right; line-height: 1.2; text-transform: uppercase; }
     .proj-summary {
       flex: 1; font-weight: 400; color: rgba(26,16,8,0.58); line-height: 1.5;
       border-top: 1px solid rgba(184,80,0,0.1); overflow: hidden;
     }
+
+    /* ── Project detail panel ── */
+    #proj-detail {
+      position: fixed;
+      top: calc(8vh - 20px);
+      left: calc(2vw + 120px);
+      transform: translateX(40px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.34, 1.1, 0.64, 1);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #proj-detail.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    #proj-nav {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .proj-nav-back {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: #B85000;
+      cursor: pointer;
+      padding: 0;
+      margin-right: 10px;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .proj-nav-back:hover { opacity: 0.5; }
+
+    .proj-nav-pill {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border-radius: 100px;
+      border: 1.5px solid rgba(184,80,0,0.3);
+      background: rgba(255,255,255,0.55);
+      color: #B85000;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+    }
+    .proj-nav-pill:hover { background: rgba(255,131,41,0.15); border-color: #FF8329; }
+    .proj-nav-pill.active { background: #FF8329; color: #fff; border-color: #FF8329; }
+
+    #proj-content {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(184,80,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.2s ease;
+    }
+    #proj-content.fading { opacity: 0; }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .detail-num   { font-weight: 900; color: #CC6000; line-height: 1; }
+    .detail-right { text-align: right; }
+    .detail-title { font-weight: 700; color: #1a1008; text-transform: uppercase; line-height: 1.1; }
+    .detail-cat   { font-weight: 500; color: #FF8329; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25em; }
+    .detail-divider { border: none; border-top: 1px solid rgba(184,80,0,0.1); margin: 0; }
+    .detail-summary { font-weight: 400; color: rgba(26,16,8,0.65); line-height: 1.65; }
+    .detail-body    { font-weight: 400; color: rgba(26,16,8,0.42); line-height: 1.7; font-style: italic; }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="back">← Back</a>
+  <a href="index.html" class="back" id="back-link">← Back</a>
   <canvas id="mars-canvas"></canvas>
   <div id="mars-label">My Work</div>
   <div id="mars-hint">GRAB &amp; SPIN THE MARS</div>
-  <div id="proj-grid"></div>
+
+  <div id="side-panel"></div>
+
+  <div id="proj-wrap">
+    <div id="proj-grid"></div>
+  </div>
+
+  <div id="proj-detail">
+    <div id="proj-nav"></div>
+    <div id="proj-content"></div>
+  </div>
 
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
   <script>
+    const CATEGORIES = ['ALL', 'ART', 'PHOTOGRAPHY', 'CASE COMP', 'SELF-ASSIGNED', 'INTERNSHIP'];
+
     const PROJECTS = [
-      { num:'01', title:'Brand Identity',    summary:'Visual language for a D2C startup' },
-      { num:'02', title:'Growth Campaign',   summary:'Multi-channel performance strategy' },
-      { num:'03', title:'UI Redesign',       summary:'Mobile-first product experience' },
-      { num:'04', title:'Motion & Story',    summary:'Animated brand narratives' },
-      { num:'05', title:'Market Positioning',summary:'Strategy and messaging framework' },
-      { num:'06', title:'Editorial Design',  summary:'Typography-led print and digital' },
-      { num:'07', title:'Packaging',         summary:'Consumer goods shelf design' },
-      { num:'08', title:'Social System',     summary:'Content architecture and templates' },
-      { num:'09', title:'Product Launch',    summary:'End-to-end go-to-market plan' },
-      { num:'10', title:'Creative Direction',summary:'Campaign concepting and oversight' },
+      { num:'01', title:'Brand Identity',     summary:'Visual language for a D2C startup',       category:'SELF-ASSIGNED'     },
+      { num:'02', title:'Growth Campaign',    summary:'Multi-channel performance strategy',       category:'CASE COMP' },
+      { num:'03', title:'UI Redesign',        summary:'Mobile-first product experience',          category:'SELF-ASSIGNED'     },
+      { num:'04', title:'Motion & Story',     summary:'Animated brand narratives',                category:'ART'               },
+      { num:'05', title:'Market Positioning', summary:'Strategy and messaging framework',         category:'CASE COMP' },
+      { num:'06', title:'Editorial Design',   summary:'Typography-led print and digital',         category:'ART'               },
+      { num:'07', title:'Packaging',          summary:'Consumer goods shelf design',              category:'ART'               },
+      { num:'08', title:'Social System',      summary:'Content architecture and templates',       category:'SELF-ASSIGNED'     },
+      { num:'09', title:'Product Launch',     summary:'End-to-end go-to-market plan',             category:'INTERNSHIP'        },
+      { num:'10', title:'Creative Direction', summary:'Campaign concepting and oversight',        category:'INTERNSHIP'        },
     ];
 
+    // ── Build side panel category pills ──────────────────────────────────────
+    const filterBar = document.getElementById('side-panel');
+    let activeCategory = 'ALL';
+
+    CATEGORIES.forEach(cat => {
+      const pill = document.createElement('button');
+      pill.className = 'side-pill' + (cat === 'ALL' ? ' active' : '');
+      pill.dataset.cat = cat;
+      pill.textContent = cat;
+      pill.addEventListener('click', () => applyFilter(cat));
+      filterBar.appendChild(pill);
+    });
+
+    // ── Build project cards ───────────────────────────────────────────────────
     const grid = document.getElementById('proj-grid');
-    PROJECTS.forEach(p => {
+
+    PROJECTS.forEach((p, idx) => {
       const btn = document.createElement('div');
       btn.className = 'proj-btn';
+      btn.dataset.category = p.category;
+      btn.dataset.index = idx;
       btn.innerHTML = `
         <div class="proj-top">
           <div class="proj-num">${p.num}</div>
           <div class="proj-title">${p.title}</div>
         </div>
         <div class="proj-summary">${p.summary}</div>`;
-      btn.addEventListener('click', () => console.log('Clicked', p.title));
+      btn.addEventListener('click', () => openProject(idx));
       grid.appendChild(btn);
     });
 
-    const allBtns = grid.querySelectorAll('.proj-btn');
+    const allBtns = Array.from(grid.querySelectorAll('.proj-btn'));
+    let cardH = 0;
 
-    // Size grid and cards from viewport
+    // ── Detail view ───────────────────────────────────────────────────────────
+    const projDetail  = document.getElementById('proj-detail');
+    const projNav     = document.getElementById('proj-nav');
+    const projContent = document.getElementById('proj-content');
+    let   currentProject = null;
+
+    // Wire the page back link to closeDetail when in detail view
+    document.getElementById('back-link').addEventListener('click', e => {
+      if (currentProject !== null) { e.preventDefault(); closeDetail(); }
+    });
+
+    // Build nav: number pills only
+    PROJECTS.forEach((p, idx) => {
+      const pill = document.createElement('button');
+      pill.className = 'proj-nav-pill';
+      pill.textContent = p.num;
+      pill.dataset.index = idx;
+      pill.addEventListener('click', () => navigateTo(idx));
+      projNav.appendChild(pill);
+    });
+
+    function renderContent(idx) {
+      const p = PROJECTS[idx];
+      projContent.innerHTML = `
+        <div class="detail-header">
+          <div class="detail-num">${p.num}</div>
+          <div class="detail-right">
+            <div class="detail-title">${p.title}</div>
+            <div class="detail-cat">${p.category}</div>
+          </div>
+        </div>
+        <hr class="detail-divider">
+        <div class="detail-summary">${p.summary}</div>
+        <div class="detail-body">${p.body ?? 'Content coming soon.'}</div>`;
+      sizeDetail();
+    }
+
+    function openProject(idx) {
+      currentProject = idx;
+
+      // Fade grid out, then show detail
+      allBtns.forEach(b => b.classList.remove('visible'));
+      filterBar.classList.remove('visible');
+
+      setTimeout(() => {
+        document.getElementById('proj-wrap').style.pointerEvents = 'none';
+        renderContent(idx);
+        updateNavPills(idx);
+        projDetail.classList.add('visible');
+      }, 280);
+    }
+
+    function closeDetail() {
+      projDetail.classList.remove('visible');
+      setTimeout(() => {
+        currentProject = null;
+        // Restore grid
+        allBtns.forEach(btn => { btn.style.display = ''; });
+        applyFilter(activeCategory);
+        filterBar.classList.add('visible');
+        grid.style.pointerEvents = 'all';
+        document.getElementById('proj-wrap').style.pointerEvents = '';
+        const matching = allBtns.filter(b => activeCategory === 'ALL' || b.dataset.category === activeCategory);
+        matching.forEach((btn, i) => setTimeout(() => btn.classList.add('visible'), i * 45));
+      }, 320);
+    }
+
+    function navigateTo(idx) {
+      if (idx === currentProject) return;
+      currentProject = idx;
+      updateNavPills(idx);
+      projContent.classList.add('fading');
+      setTimeout(() => {
+        renderContent(idx);
+        projContent.classList.remove('fading');
+      }, 210);
+    }
+
+    function updateNavPills(idx) {
+      projNav.querySelectorAll('.proj-nav-pill').forEach((pill, i) =>
+        pill.classList.toggle('active', i === idx));
+    }
+
+    function sizeDetail() {
+      const W  = window.innerWidth;
+      const H  = window.innerHeight;
+      const GAP = 8;
+      const MARS_OPEN         = 340;
+      const MARS_RIGHT_MARGIN = W * 0.05;
+      const LEFT_MARGIN       = W * 0.02 + 120;
+      const GRID_GAP_FROM_MARS = 60;
+
+      const panelW = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
+      const panelH = H * 0.84;
+      const navH   = projNav.offsetHeight + 10;
+      const contentH = panelH - navH;
+
+      projDetail.style.width = panelW + 'px';
+      projContent.style.width  = panelW + 'px';
+      projContent.style.height = contentH + 'px';
+      projContent.style.borderRadius = (cardH * 0.08 || 14) + 'px';
+
+      const pad    = contentH * 0.06;
+      const numSz  = contentH * 0.18;
+      const titSz  = contentH * 0.07;
+      const catSz  = contentH * 0.038;
+      const sumSz  = contentH * 0.048;
+      const bodySz = contentH * 0.042;
+      const pillSz = Math.max(7, panelW * 0.018);
+
+      projContent.querySelectorAll('.detail-header').forEach(h => {
+        h.style.padding = `${pad}px ${pad}px ${pad * 0.5}px`;
+      });
+      projContent.querySelectorAll('.detail-num').forEach(n => n.style.fontSize = numSz + 'px');
+      projContent.querySelectorAll('.detail-title').forEach(t => t.style.fontSize = titSz + 'px');
+      projContent.querySelectorAll('.detail-cat').forEach(c => c.style.fontSize = catSz + 'px');
+      projContent.querySelectorAll('.detail-summary').forEach(s => {
+        s.style.fontSize = sumSz + 'px';
+        s.style.padding  = `${pad * 0.6}px ${pad}px`;
+      });
+      projContent.querySelectorAll('.detail-body').forEach(b => {
+        b.style.fontSize = bodySz + 'px';
+        b.style.padding  = `0 ${pad}px ${pad}px`;
+      });
+
+      projNav.querySelectorAll('.proj-nav-pill').forEach(p => {
+        p.style.fontSize = pillSz + 'px';
+        p.style.padding  = `${pillSz * 0.32}px ${pillSz * 0.85}px`;
+      });
+    }
+
+    // ── Filter logic ──────────────────────────────────────────────────────────
+    let filterTimer = null;
+
+    function applyFilter(cat) {
+      activeCategory = cat;
+      if (filterTimer) clearTimeout(filterTimer);
+
+      filterBar.querySelectorAll('.side-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.cat === cat));
+
+      // Phase 1 — fade out all currently visible cards
+      allBtns.forEach(btn => btn.classList.remove('visible'));
+
+      // Phase 2 — collapse hidden, reset matching to start state
+      filterTimer = setTimeout(() => {
+        const matching = [];
+        allBtns.forEach(btn => {
+          const match = cat === 'ALL' || btn.dataset.category === cat;
+          btn.style.display = match ? '' : 'none';
+          btn.style.pointerEvents = '';
+          if (match) {
+            btn.classList.remove('visible');
+            matching.push(btn);
+          }
+        });
+
+        // Two frames so browser paints the collapsed + reset state before animating in
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          matching.forEach((btn, i) => {
+            setTimeout(() => btn.classList.add('visible'), i * 50);
+          });
+        }));
+      }, 290);
+    }
+
+    // ── Size grid & pills from viewport ──────────────────────────────────────
     function sizeGrid() {
       const W   = window.innerWidth;
       const H   = window.innerHeight;
       const GAP = 8;
-      const MARS_OPEN = 340;
-      const MARS_RIGHT_MARGIN = W * 0.05;   // 5vw
-      const LEFT_MARGIN = W * 0.02 + 70;
+      const MARS_OPEN          = 340;
+      const MARS_RIGHT_MARGIN  = W * 0.05;
+      const LEFT_MARGIN        = W * 0.02 + 140;
       const GRID_GAP_FROM_MARS = 60;
 
       const gridW = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
       const gridH = H * 0.84;
 
-      const cardW = (gridW - GAP) / 2;
-      const cardH = (gridH - 4 * GAP) / 5;
+      cardH = (gridH - 4 * GAP) / 5;
 
-      grid.style.width  = gridW + 'px';
-      grid.style.height = gridH + 'px';
+      grid.style.width        = gridW + 'px';
+      grid.style.gridAutoRows = cardH + 'px';
 
-      const pad    = cardH * 0.10;
-      const numSz  = cardH * 0.30;
-      const titSz  = cardH * 0.11 + 7;
-      const sumSz  = cardH * 0.10;
 
+      const pad   = cardH * 0.10;
+      const numSz = cardH * 0.30;
+      const titSz = cardH * 0.11 + 7;
+      const sumSz = cardH * 0.10;
       allBtns.forEach(b => {
         b.style.borderRadius = (cardH * 0.08) + 'px';
       });
@@ -213,7 +538,7 @@
     }
     sizeGrid();
 
-    // Babylon
+    // ── Babylon.js ────────────────────────────────────────────────────────────
     const canvas = document.getElementById('mars-canvas');
     const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, adaptToDeviceRatio: true });
     const scene  = new BABYLON.Scene(engine);
@@ -256,7 +581,7 @@
       });
       canvas.addEventListener('pointermove', e => {
         if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5) {
-          if (!hasDragged) toggleOpen();  // any spin toggles open/close
+          if (!hasDragged) toggleOpen();
           hasDragged = true;
         }
       });
@@ -269,6 +594,7 @@
         isOpen = !isOpen;
         canvas.classList.toggle('open', isOpen);
         canvas.style.cursor = isOpen ? 'grab' : 'pointer';
+
         const hint = document.getElementById('mars-hint');
         if (isOpen) {
           hint.classList.add('hidden');
@@ -278,19 +604,43 @@
           hint.offsetWidth;
           hint.style.animation = 'typewriter-loop 5s infinite';
         }
+
         document.getElementById('mars-label').classList.toggle('visible', isOpen);
         setTimeout(() => engine.resize(), 750);
 
-        grid.style.pointerEvents = isOpen ? 'all' : 'none';
-        allBtns.forEach((btn, i) => {
-          const delay = isOpen ? i * 50 : (allBtns.length - 1 - i) * 30;
-          setTimeout(() => btn.classList.toggle('visible', isOpen), delay);
-        });
+        if (isOpen) {
+          // Reset to grid view on open
+          if (currentProject !== null) {
+            projDetail.classList.remove('visible');
+            currentProject = null;
+          }
+          activeCategory = 'ALL';
+          filterBar.querySelectorAll('.side-pill').forEach(p =>
+            p.classList.toggle('active', p.dataset.cat === 'ALL'));
+          allBtns.forEach(btn => { btn.style.display = ''; });
+          allBtns.forEach((btn, i) => {
+            btn.classList.remove('visible');
+            setTimeout(() => btn.classList.add('visible'), 80 + i * 50);
+          });
+          grid.style.pointerEvents = 'all';
+          filterBar.classList.add('visible');
+        } else {
+          // Close: hide everything
+          filterBar.classList.remove('visible');
+          projDetail.classList.remove('visible');
+          currentProject = null;
+          grid.style.pointerEvents = 'none';
+          allBtns.forEach((btn, i) => {
+            const delay = (allBtns.length - 1 - i) * 30;
+            setTimeout(() => btn.classList.remove('visible'), delay);
+          });
+          setTimeout(() => applyFilter('ALL'), allBtns.length * 30 + 400);
+        }
       }
     });
 
     engine.runRenderLoop(() => scene.render());
-    window.addEventListener('resize', () => { engine.resize(); sizeGrid(); });
+    window.addEventListener('resize', () => { engine.resize(); sizeGrid(); sizeDetail(); });
   </script>
 </body>
 </html>
