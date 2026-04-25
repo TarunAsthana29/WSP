@@ -174,7 +174,7 @@
     .proj-num     { font-weight: 900; color: #CC6000; line-height: 1; }
     .proj-title   { font-weight: 500; color: #1a1008; text-align: right; line-height: 1.2; text-transform: uppercase; }
     .proj-summary {
-      flex: 1; font-weight: 400; color: rgba(26,16,8,0.58); line-height: 1.5;
+      flex: 1; font-weight: 500; color: rgba(26,16,8,0.58); line-height: 1.5;
       border-top: 1px solid rgba(184,80,0,0.1); overflow: hidden;
     }
 
@@ -182,15 +182,16 @@
     #proj-detail {
       position: fixed;
       top: calc(8vh - 20px);
-      left: calc(2vw + 120px);
+      left: 1.2vw;
       transform: translateX(40px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.34, 1.1, 0.64, 1);
       z-index: 5;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-direction: row;
+      gap: 14px;
+      align-items: flex-start;
     }
     #proj-detail.visible {
       opacity: 1;
@@ -200,9 +201,11 @@
 
     #proj-nav {
       display: flex;
-      flex-wrap: nowrap;
+      flex-direction: column;
       gap: 5px;
-      align-items: center;
+      align-items: stretch;
+      flex-shrink: 0;
+      margin-top: 25px;
     }
 
     .proj-nav-back {
@@ -243,6 +246,8 @@
       display: flex;
       flex-direction: column;
       transition: opacity 0.2s ease;
+      margin-left: 25px;
+      margin-top: 25px;
     }
     #proj-content.fading { opacity: 0; }
 
@@ -256,8 +261,92 @@
     .detail-title { font-weight: 700; color: #1a1008; text-transform: uppercase; line-height: 1.1; }
     .detail-cat   { font-weight: 500; color: #FF8329; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25em; }
     .detail-divider { border: none; border-top: 1px solid rgba(184,80,0,0.1); margin: 0; }
-    .detail-summary { font-weight: 400; color: rgba(26,16,8,0.65); line-height: 1.65; }
-    .detail-body    { font-weight: 400; color: rgba(26,16,8,0.42); line-height: 1.7; font-style: italic; }
+    /* ── Project fields grid ── */
+    .proj-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184,80,0,0.12) transparent;
+    }
+    .proj-fields-grid::-webkit-scrollbar { width: 3px; }
+    .proj-fields-grid::-webkit-scrollbar-thumb { background: rgba(184,80,0,0.15); border-radius: 3px; }
+
+    .proj-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-right: 1px solid rgba(184,80,0,0.08);
+      border-bottom: 1px solid rgba(184,80,0,0.08);
+    }
+    .proj-field.full-width {
+      grid-column: 1 / -1;
+      border-right: none;
+    }
+    .proj-field:last-child, .proj-field:nth-last-child(2):not(.full-width) {
+      border-bottom: none;
+    }
+    .proj-field:nth-child(even):not(.full-width) { border-right: none; }
+
+    .field-label {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #FF8329;
+      line-height: 1;
+    }
+    .field-value {
+      font-family: 'Garet', sans-serif;
+      font-weight: 500;
+      color: #111 !important;
+      line-height: 1.6;
+    }
+    .field-value.empty {
+      color: rgba(26,16,8,0.22);
+      font-style: italic;
+    }
+    .field-summary { font-weight: 450; }
+
+    /* ── Phase-grouped actions ── */
+    .actions-phases {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+    }
+    .phase-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .phase-label {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: 0.7em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #FF8329;
+      border-bottom: 1.5px solid rgba(255,131,41,0.25);
+      padding-bottom: 3px;
+      margin-bottom: 3px;
+    }
+    .phase-item {
+      font-size: 0.9em;
+      line-height: 1.55;
+      padding-left: 14px;
+      position: relative;
+      color: #111;
+    }
+    .phase-item::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #FF8329;
+      opacity: 0.65;
+      font-size: 0.85em;
+      top: 1px;
+    }
   </style>
 </head>
 <body>
@@ -284,7 +373,41 @@
     const CATEGORIES = ['ALL', 'ART', 'PHOTOGRAPHY', 'CASE COMP', 'SELF-ASSIGNED', 'INTERNSHIP'];
 
     const PROJECTS = [
-      { num:'01', title:'Brand Identity',     summary:'Visual language for a D2C startup',       category:'SELF-ASSIGNED'     },
+      {
+        num: '01', title: 'Detoxie Rebranding', category: 'SELF-ASSIGNED',
+        summary:  'Won 1st of 50 teams repositioning Detoxie\'s Hard Water range in a 7-day sprint.',
+        context:  'Detoxie\'s Hard Water hair care range had cluttered packaging and no clear benefit-led value proposition. Competitive analysis revealed identifiable gaps across design, semiotics, visual systems, and claims hierarchy across 4 brands.',
+        role:     'Lead strategist and designer — responsible for research synthesis, brand positioning, content hierarchy, packaging systems development, and Amazon PDP creatives.',
+        tasks:    'Reposition the Hard Water range through competitive research and consumer insight. Redesign packaging with a benefit-led value proposition. Deliver final SKUs and Amazon PDP creatives.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Mapped category gaps via competitive analysis of 4 brands across design, semiotics, visual systems, and claims hierarchy.</div>
+            <div class="phase-item">Synthesised 250+ reviews via AI-assisted digital ethnography across Amazon, Flipkart, brand site, and Reddit using Gemini and ChatGPT.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Identified top 3 repeat-purchase drivers from qualitative user research; reframed cluttered packaging into a benefit-led value proposition.</div>
+            <div class="phase-item">Built content hierarchy framework translating research into data-informed decisions on claims, ingredients, and benefits.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Developed 5 packaging systems from 10 sketches through structured design experimentation on glanceability, hierarchy, and shelf impact.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Validated via A/B testing with 30 users comparing scores on clarity, trust, and purchase intent via in-person surveys.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered 4 final SKUs (shampoo + conditioner) with adaptive content and semiotically driven visual hierarchy.</div>
+            <div class="phase-item">Designed 20 Amazon PDP creatives applying Jobs-to-be-Done framing informed by user research and transactional analysis.</div>
+          </div>
+        </div>`,
+        results:  '1st of 50 teams · 4 final SKUs delivered (shampoo + conditioner) · 20 Amazon PDP creatives · 30-user A/B validation across clarity, trust, and purchase intent.',
+        tools:    'Gemini (AI-assisted ethnography), Illustrator, Procreate, In-person A/B survey testing',
+        duration: '7 days',
+      },
       { num:'02', title:'Growth Campaign',    summary:'Multi-channel performance strategy',       category:'CASE COMP' },
       { num:'03', title:'UI Redesign',        summary:'Mobile-first product experience',          category:'SELF-ASSIGNED'     },
       { num:'04', title:'Motion & Story',     summary:'Animated brand narratives',                category:'ART'               },
@@ -353,6 +476,14 @@
 
     function renderContent(idx) {
       const p = PROJECTS[idx];
+      function field(label, value, full = false, extraValClass = '') {
+        const cls = 'proj-field' + (full ? ' full-width' : '');
+        const valCls = 'field-value' + (extraValClass ? ' ' + extraValClass : '');
+        const val = value
+          ? `<div class="${valCls}">${value}</div>`
+          : `<div class="${valCls} empty">—</div>`;
+        return `<div class="${cls}"><div class="field-label">${label}</div>${val}</div>`;
+      }
       projContent.innerHTML = `
         <div class="detail-header">
           <div class="detail-num">${p.num}</div>
@@ -362,8 +493,16 @@
           </div>
         </div>
         <hr class="detail-divider">
-        <div class="detail-summary">${p.summary}</div>
-        <div class="detail-body">${p.body ?? 'Content coming soon.'}</div>`;
+        <div class="proj-fields-grid">
+          ${field('1-Line Summary', p.summary, true, 'field-summary')}
+          ${field('Context / Situation', p.context, true)}
+          ${field('Your Role', p.role)}
+          ${field('Tasks', p.tasks)}
+          ${field('Actions', p.actions, true)}
+          ${field('Results', p.results, true)}
+          ${field('Tools Used', p.tools)}
+          ${field('Duration', p.duration)}
+        </div>`;
       sizeDetail();
     }
 
@@ -376,6 +515,7 @@
 
       setTimeout(() => {
         document.getElementById('proj-wrap').style.pointerEvents = 'none';
+        filterNavPills(activeCategory);
         renderContent(idx);
         updateNavPills(idx);
         projDetail.classList.add('visible');
@@ -386,6 +526,7 @@
       projDetail.classList.remove('visible');
       setTimeout(() => {
         currentProject = null;
+        filterNavPills('ALL');  // reset all pills visible for next open
         // Restore grid
         allBtns.forEach(btn => { btn.style.display = ''; });
         applyFilter(activeCategory);
@@ -409,36 +550,45 @@
     }
 
     function updateNavPills(idx) {
-      projNav.querySelectorAll('.proj-nav-pill').forEach((pill, i) =>
-        pill.classList.toggle('active', i === idx));
+      projNav.querySelectorAll('.proj-nav-pill').forEach(pill =>
+        pill.classList.toggle('active', parseInt(pill.dataset.index) === idx));
+    }
+
+    function filterNavPills(cat) {
+      projNav.querySelectorAll('.proj-nav-pill').forEach(pill => {
+        const match = cat === 'ALL' || PROJECTS[parseInt(pill.dataset.index)].category === cat;
+        pill.style.display = match ? '' : 'none';
+      });
     }
 
     function sizeDetail() {
       const W  = window.innerWidth;
       const H  = window.innerHeight;
-      const GAP = 8;
-      const MARS_OPEN         = 340;
-      const MARS_RIGHT_MARGIN = W * 0.05;
-      const LEFT_MARGIN       = W * 0.02 + 120;
+      const MARS_OPEN          = 340;
+      const MARS_RIGHT_MARGIN  = W * 0.05;
+      const LEFT_MARGIN        = W * 0.012;   // 1.2vw — aligns with #proj-detail left
       const GRID_GAP_FROM_MARS = 60;
+      const NAV_COL_W          = 52;          // fixed width for the vertical pill column
+      const NAV_GAP            = 14;
 
-      const panelW = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
-      const panelH = H * 0.84;
-      const navH   = projNav.offsetHeight + 10;
-      const contentH = panelH - navH;
+      const totalW   = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
+      const panelW   = totalW - NAV_COL_W - NAV_GAP - 25;  // -25 for content margin-left
+      const panelH   = H * 0.84;
+      const contentH = panelH - 25;          // -25 for content margin-top
 
-      projDetail.style.width = panelW + 'px';
+      projDetail.style.width = totalW + 'px';
       projContent.style.width  = panelW + 'px';
       projContent.style.height = contentH + 'px';
       projContent.style.borderRadius = (cardH * 0.08 || 14) + 'px';
 
-      const pad    = contentH * 0.06;
-      const numSz  = contentH * 0.18;
-      const titSz  = contentH * 0.07;
-      const catSz  = contentH * 0.038;
-      const sumSz  = contentH * 0.048;
-      const bodySz = contentH * 0.042;
-      const pillSz = Math.max(7, panelW * 0.018);
+      const pad        = contentH * 0.04;
+      const numSz      = contentH * 0.10;   // reduced from 0.18
+      const titSz      = contentH * 0.045;  // reduced from 0.07
+      const catSz      = contentH * 0.028;
+      const fieldLblSz = Math.max(7,  contentH * 0.026);
+      const fieldValSz = Math.max(8,  contentH * 0.036);
+      const fieldPad   = contentH * 0.028;
+      const pillSz     = Math.max(7, NAV_COL_W * 0.22);
 
       projContent.querySelectorAll('.detail-header').forEach(h => {
         h.style.padding = `${pad}px ${pad}px ${pad * 0.5}px`;
@@ -446,18 +596,26 @@
       projContent.querySelectorAll('.detail-num').forEach(n => n.style.fontSize = numSz + 'px');
       projContent.querySelectorAll('.detail-title').forEach(t => t.style.fontSize = titSz + 'px');
       projContent.querySelectorAll('.detail-cat').forEach(c => c.style.fontSize = catSz + 'px');
-      projContent.querySelectorAll('.detail-summary').forEach(s => {
-        s.style.fontSize = sumSz + 'px';
-        s.style.padding  = `${pad * 0.6}px ${pad}px`;
+      projContent.querySelectorAll('.proj-field').forEach(f => {
+        f.style.padding = `${fieldPad}px`;
       });
-      projContent.querySelectorAll('.detail-body').forEach(b => {
-        b.style.fontSize = bodySz + 'px';
-        b.style.padding  = `0 ${pad}px ${pad}px`;
+      projContent.querySelectorAll('.field-label').forEach(l => {
+        l.style.fontSize = fieldLblSz + 'px';
+        l.style.marginBottom = (fieldLblSz * 0.3) + 'px';
+      });
+      projContent.querySelectorAll('.field-value').forEach(v => {
+        v.style.fontSize = fieldValSz + 'px';
+        v.style.color = '#111';
+      });
+      projContent.querySelectorAll('.field-summary').forEach(v => {
+        v.style.fontWeight = '450';
       });
 
       projNav.querySelectorAll('.proj-nav-pill').forEach(p => {
-        p.style.fontSize = pillSz + 'px';
-        p.style.padding  = `${pillSz * 0.32}px ${pillSz * 0.85}px`;
+        p.style.fontSize  = pillSz + 'px';
+        p.style.padding   = `${pillSz * 0.55}px 0`;
+        p.style.width     = NAV_COL_W + 'px';
+        p.style.textAlign = 'center';
       });
     }
 
@@ -533,7 +691,7 @@
       });
       grid.querySelectorAll('.proj-summary').forEach(s => {
         s.style.padding  = `${pad * 0.6}px ${pad}px`;
-        s.style.fontSize = sumSz + 'px';
+        s.style.fontSize = (sumSz + 2) + 'px';
       });
     }
     sizeGrid();

@@ -144,8 +144,8 @@
 
     .btn-group {
       position: fixed;
-      bottom: 8vh;
-      right: 3vw;
+      bottom: calc(8vh + 100px);
+      right: calc(3vw + 100px);
       display: flex;
       gap: calc(1rem + 20px);
       align-items: center;
@@ -201,7 +201,7 @@
     .btn-label {
       font-size: 1vw;
       font-style: italic;
-      font-weight: 400;
+      font-weight: 700;
       margin-top: 10px;
     }
 
@@ -323,13 +323,25 @@
       let mx = window.innerWidth / 2, my = window.innerHeight / 2;
       let avOffX = 0, avOffY = 0;
 
-      // Sync with the avatar parallax offsets calculated in the main script
-      window.addEventListener('mousemove', (e) => {
-        mx = e.clientX; my = e.clientY;
+      function updatePointer(x, y) {
+        mx = x; my = y;
         const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-        avOffX = ((e.clientX - cx) / cx) * 12;
-        avOffY = ((e.clientY - cy) / cy) * 8;
-      });
+        avOffX = ((x - cx) / cx) * 12;
+        avOffY = ((y - cy) / cy) * 8;
+      }
+
+      window.addEventListener('mousemove', (e) => updatePointer(e.clientX, e.clientY));
+
+      window.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        updatePointer(t.clientX, t.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        mx = window.innerWidth / 2;
+        my = window.innerHeight / 2;
+        avOffX = 0; avOffY = 0;
+      }, { passive: true });
 
       function resize() {
         canvas.width  = window.innerWidth;
@@ -455,23 +467,29 @@
     const avatar = document.querySelector('.avatar');
     avatar.style.animation = 'avatar-float 4s ease-in-out infinite';
 
-    // Mouse parallax
-    let floatY = 0;
-    document.addEventListener('mousemove', (e) => {
+    function applyParallax(clientX, clientY) {
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx; // -1 to 1
-      const dy = (e.clientY - cy) / cy;
-      const px = dx * 12;
-      const py = dy * 8;
+      const px = ((clientX - cx) / cx) * 12;
+      const py = ((clientY - cy) / cy) * 8;
       avatar.style.animation = 'none';
       avatar.style.transform = `translateX(calc(-50% + ${px}px)) translateY(${py}px)`;
-    });
+    }
 
-    document.addEventListener('mouseleave', () => {
+    function resetParallax() {
       avatar.style.animation = 'avatar-float 4s ease-in-out infinite';
       avatar.style.transform = 'translateX(-50%)';
-    });
+    }
+
+    document.addEventListener('mousemove', (e) => applyParallax(e.clientX, e.clientY));
+    document.addEventListener('mouseleave', resetParallax);
+
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      applyParallax(t.clientX, t.clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchend', resetParallax, { passive: true });
 
   </script>
 </body>
