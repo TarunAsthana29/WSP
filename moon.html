@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Me — Tarun Asthana</title>
+  <style>
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Heavy.ttf') format('truetype'); font-weight:900; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Bold.ttf')  format('truetype'); font-weight:700; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Medium.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Book.ttf')  format('truetype'); font-weight:400; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; min-height: 100vh;
+      background: #e4e2dd;
+      font-family: 'Garet', sans-serif;
+      overflow: hidden;
+    }
+
+    .back {
+      position: fixed; top: 3vh; left: 3vw;
+      font-size: 0.82vw; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; color: #3a3a44;
+      z-index: 30; transition: opacity 0.2s;
+    }
+    .back:hover { opacity: 0.5; }
+
+    /* ── Moon hint ── */
+    #moon-hint {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-weight: 700; font-size: 1.3vw;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      white-space: nowrap; pointer-events: none;
+      z-index: 11;
+      animation: typewriter-loop 5s infinite;
+    }
+    #moon-hint.hidden { display: none; }
+
+    @keyframes typewriter-loop {
+      0%   { clip-path: inset(0 100% 0 0);  animation-timing-function: steps(22, end); }
+      38%  { clip-path: inset(0 0%   0 0);  animation-timing-function: steps(1,  end); }
+      55%  { clip-path: inset(0 0    0 0%); animation-timing-function: steps(22, end); }
+      93%  { clip-path: inset(0 0    0 100%); }
+      100% { clip-path: inset(0 0    0 100%); }
+    }
+
+    /* ── Moon canvas ── */
+    #moon-canvas {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      cursor: pointer; outline: none; background: transparent;
+      transition: width  0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  height 0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  left   0.7s cubic-bezier(0.34, 1.1, 0.64, 1);
+      z-index: 10;
+    }
+    #moon-canvas.open {
+      width: 340px; height: 340px;
+      left: calc(100vw - 50px - 170px);
+      cursor: grab;
+    }
+
+    #moon-label {
+      position: fixed;
+      left: calc(100vw - 50px - 170px);
+      transform: translateX(-50%);
+      top: calc(50% - 170px - 3.8vw - 14px);
+      font-weight: 700; font-size: 3vw;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: #3a3a44; text-align: center;
+      pointer-events: none; z-index: 12;
+      opacity: 0; transition: opacity 0.4s ease 0.3s;
+    }
+    #moon-label.visible { opacity: 1; }
+
+    /* ── About panel — full-height scrollable page ── */
+    #about-panel {
+      position: fixed;
+      top: 0; left: 2vw;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #f4f1ec;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-28px);
+      transition: opacity 0.5s ease 0.15s,
+                  transform 0.65s cubic-bezier(0.34, 1.05, 0.64, 1) 0.15s;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.08) transparent;
+      z-index: 5;
+    }
+    #about-panel::-webkit-scrollbar { width: 3px; }
+    #about-panel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
+    #about-panel.visible { opacity: 1; pointer-events: all; transform: translateX(0); }
+
+    #about-scroll { padding: 0 9%; }
+
+    /* ── Scroll reveal ── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+    [data-reveal][data-d="1"] { transition-delay: 0.12s; }
+    [data-reveal][data-d="2"] { transition-delay: 0.26s; }
+    [data-reveal][data-d="3"] { transition-delay: 0.42s; }
+
+    /* ── Shared ── */
+    .s-label {
+      font-size: clamp(0.58rem, 0.85vw, 0.72rem);
+      font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(0,0,0,0.28);
+      margin-bottom: 3vh;
+    }
+
+    /* ── 1. HERO ── */
+    .s-hero {
+      min-height: 30vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 8vh 0 4vh;
+    }
+    .hero-title {
+      font-size: clamp(1.75rem, 3.6vw, 4.4rem);
+      font-weight: 900; color: #0f0f0f;
+      line-height: 1.12; letter-spacing: -0.025em;
+      max-width: 680px;
+    }
+    .kw {
+      background: none; color: inherit;
+      cursor: default; position: relative; display: inline;
+      transition: color 0.22s;
+    }
+    .kw::after {
+      content: ''; position: absolute;
+      bottom: 2px; left: 0; right: 0; height: 2px;
+      background: #c8501a;
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .kw:hover { color: #c8501a; }
+    .kw:hover::after { transform: scaleX(1); }
+
+    .hero-sub {
+      margin-top: 3.5vh;
+      font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+      font-weight: 500; color: rgba(0,0,0,0.38);
+      line-height: 1.9; letter-spacing: 0.02em;
+    }
+
+    /* ── 2. IDENTITY ── */
+    .s-identity {
+      min-height: 20vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 4vh 0;
+    }
+    .s-rule {
+      border: none; border-top: 1px solid rgba(0,0,0,0.14);
+      width: 48px; margin: 0 0 5vh 4%;
+    }
+    .identity-text {
+      font-size: clamp(0.95rem, 1.9vw, 1.5rem);
+      font-weight: 500; color: #1a1a1a;
+      line-height: 1.7; max-width: 540px;
+      margin-left: 4%;
+    }
+
+    /* ── 3. CORE ANCHOR ── */
+    .s-anchor {
+      min-height: 40vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; gap: 2.8vh;
+      padding: 6vh 0;
+    }
+    .anchor-line {
+      font-size: clamp(0.95rem, 1.75vw, 1.35rem);
+      font-weight: 700; color: #1a1a1a;
+      line-height: 1.4; letter-spacing: -0.01em;
+    }
+
+    /* ── 4. STORY ── */
+    .s-story {
+      min-height: 80vh;
+      display: flex; flex-direction: row;
+      align-items: center; gap: 8%;
+      padding: 8vh 0;
+    }
+    .story-left {
+      flex: 1.1;
+      display: flex; flex-direction: column;
+      gap: 4vh;
+    }
+    .story-block {
+      font-size: clamp(0.85rem, 1.35vw, 1.08rem);
+      font-weight: 500; color: #2a2a2a;
+      line-height: 1.8; max-width: 420px;
+    }
+    .story-block strong {
+      font-weight: 700; color: #0f0f0f;
+    }
+    .story-right {
+      flex: 0.65; min-height: 260px;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 4.5vh;
+      padding: 0 8%;
+    }
+
+    /* ── 5. PROOF ── */
+    .s-proof {
+      min-height: 70vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 8vh 0;
+    }
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 8%;
+      margin-top: 2vh;
+    }
+    .proof-item {
+      font-size: clamp(0.82rem, 1.3vw, 1rem);
+      font-weight: 700; color: #111;
+      padding: 1.4em 0;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      cursor: default;
+      display: flex; align-items: flex-start; gap: 10px;
+      transition: color 0.2s;
+    }
+    .proof-item:hover { color: #c8501a; }
+    .proof-sub {
+      display: block;
+      font-size: 0.8em; font-weight: 500;
+      color: rgba(0,0,0,0.38); margin-top: 3px;
+    }
+
+    /* ── 6. CAPABILITY ── */
+    .s-capability {
+      min-height: 70vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 8vh 0;
+    }
+    .cap-blocks {
+      display: flex; flex-direction: row;
+      gap: 28px; margin-top: 3vh;
+      align-items: flex-start;
+    }
+    .cap-block {
+      flex: 1; border-top: 1.5px solid rgba(0,0,0,0.1);
+      padding-top: 2.2vh;
+    }
+    .cap-title {
+      font-size: clamp(0.82rem, 1.35vw, 1rem);
+      font-weight: 700; color: #c8501a;
+      letter-spacing: 0.01em; margin-bottom: 0.9em;
+    }
+    .cap-desc {
+      font-size: clamp(0.76rem, 1.08vw, 0.86rem);
+      font-weight: 500; color: #444; line-height: 1.75;
+    }
+
+    /* ── 7. PERSONALITY ── */
+    .s-personality {
+      min-height: 60vh;
+      display: flex; flex-direction: row;
+      align-items: center; gap: 14%;
+      padding: 8vh 0;
+    }
+    .pers-col {
+      flex: 1; display: flex;
+      flex-direction: column; gap: 2.8vh;
+    }
+    .pers-item {
+      font-size: clamp(0.85rem, 1.45vw, 1.1rem);
+      font-weight: 500; color: #1a1a1a; line-height: 1.5;
+    }
+
+    /* ── 8. VALUES ── */
+    .s-values {
+      min-height: 60vh;
+      display: flex; flex-direction: row;
+      align-items: center; gap: 0;
+      padding: 8vh 0;
+    }
+    .val-left {
+      flex: 1;
+      padding-right: 8%;
+      border-right: 1px solid rgba(0,0,0,0.1);
+    }
+    .val-intro {
+      font-size: clamp(0.72rem, 1.05vw, 0.85rem);
+      font-weight: 500; color: rgba(0,0,0,0.38);
+      margin-bottom: 2vh;
+    }
+    .val-item {
+      font-size: clamp(0.85rem, 1.35vw, 1.05rem);
+      font-weight: 700; color: #111;
+      padding: 0.55em 0;
+    }
+    .val-right {
+      flex: 1.2; padding-left: 8%;
+      font-size: clamp(0.85rem, 1.35vw, 1.05rem);
+      font-weight: 500; color: #2a2a2a; line-height: 1.8;
+    }
+
+    /* ── 9. BELIEF ── */
+    .s-belief {
+      min-height: 70vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; padding: 10vh 0;
+    }
+    .belief-text {
+      font-size: clamp(1.05rem, 2.1vw, 1.65rem);
+      font-weight: 600; color: #111;
+      line-height: 1.65; max-width: 540px;
+    }
+    .belief-accent {
+      margin-top: 3.5vh;
+      font-size: clamp(0.88rem, 1.55vw, 1.2rem);
+      font-weight: 700; color: #c8501a;
+    }
+
+    /* ── 10. CTA ── */
+    .s-cta {
+      min-height: 50vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; padding: calc(8vh - 35px) 0 14vh;
+    }
+
+    /* ── Top creative links ── */
+    .top-links {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center;
+      padding: 3vh 0 0;
+    }
+    .top-link {
+      font-size: clamp(0.62rem, 0.88vw, 0.72rem);
+      font-weight: 700; color: #2a2a2a;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      border: 1.5px solid rgba(0,0,0,0.18);
+      padding: 0.45em 1.1em;
+      border-radius: 100px;
+      display: inline-flex; align-items: center; gap: 5px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .top-link:hover { border-color: #c8501a; color: #c8501a; }
+    .cta-text {
+      font-size: clamp(0.88rem, 1.6vw, 1.25rem);
+      font-weight: 500; color: #2a2a2a;
+      line-height: 1.85; max-width: 480px;
+    }
+    .cta-links {
+      margin-top: 4.5vh;
+      display: flex; gap: 3vw; align-items: center;
+    }
+    .cta-link {
+      font-size: clamp(0.75rem, 1.05vw, 0.88rem);
+      font-weight: 700; color: #fff;
+      text-decoration: none; letter-spacing: 0.07em; text-transform: uppercase;
+      background: #c8501a;
+      padding: 0.8em 1.8em;
+      border-radius: 100px;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .cta-link:hover { opacity: 0.85; transform: translateY(-2px); }
+    .cta-link.outline {
+      background: transparent; color: #2a2a2a;
+      border: 1.5px solid rgba(0,0,0,0.2);
+    }
+    .cta-link.outline:hover { border-color: #c8501a; color: #c8501a; opacity: 1; transform: translateY(-2px); }
+    /* ── Scroll progress ── */
+    #scroll-bar {
+      position: sticky; top: 0;
+      width: 100%; height: 2px;
+      background: rgba(0,0,0,0.06);
+      z-index: 20; flex-shrink: 0;
+    }
+    #scroll-fill { height: 100%; width: 0%; background: #c8501a; }
+
+    /* ── Icons ── */
+    .proof-icon {
+      flex-shrink: 0; margin-top: 0.18em;
+      width: 14px; height: 14px; color: rgba(0,0,0,0.22);
+      transition: color 0.2s;
+    }
+    .proof-item:hover .proof-icon { color: #c8501a; }
+    .cap-icon {
+      display: block; width: 18px; height: 18px;
+      color: #c8501a; margin-bottom: 1.4vh;
+    }
+    .cta-icon { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* ── Story stats ── */
+    .story-stat { display: flex; flex-direction: column; gap: 3px; }
+    .stat-num {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900; color: #c8501a;
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .stat-label {
+      font-size: clamp(0.62rem, 0.88vw, 0.72rem);
+      font-weight: 500; color: rgba(0,0,0,0.38);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back">← Back</a>
+  <canvas id="moon-canvas"></canvas>
+  <div id="moon-label">About Me</div>
+  <div id="moon-hint">GRAB &amp; SPIN THE MOON</div>
+
+  <div id="about-panel">
+    <div id="scroll-bar"><div id="scroll-fill"></div></div>
+    <div id="about-scroll">
+
+      <!-- TOP LINKS -->
+      <div class="top-links">
+        <a href="https://www.instagram.com/tarunnasthana25" class="top-link" target="_blank"><i data-lucide="paintbrush" class="cta-icon"></i>See my artworks</a>
+        <a href="https://www.behance.net/gallery/228759247/Photography" class="top-link" target="_blank"><i data-lucide="camera" class="cta-icon"></i>See my Photography</a>
+        <a href="https://www.behance.net/gallery/228775949/Yaad-Hai-Na-Campaign" class="top-link" target="_blank"><i data-lucide="heart" class="cta-icon"></i>Closest to my heart</a>
+      </div>
+
+      <!-- 1. HERO -->
+      <section class="s-hero">
+        <h1 class="hero-title" data-reveal>
+          I build work that people <mark class="kw">connect</mark> with.
+        </h1>
+        <p class="hero-sub" data-reveal data-d="1">
+          <mark class="kw">Marketing</mark>. <mark class="kw">Design</mark>. <mark class="kw">Human Insight</mark>.
+        </p>
+      </section>
+
+      <!-- 2. IDENTITY -->
+      <section class="s-identity">
+        <hr class="s-rule" data-reveal>
+        <p class="identity-text" data-reveal data-d="1">
+          I work across marketing, design, and storytelling, translating how people think and feel into work that actually lands.
+        </p>
+      </section>
+
+      <!-- 4. STORY -->
+      <section class="s-story">
+        <div class="story-left">
+          <div class="s-label" data-reveal>The arc</div>
+          <p class="story-block" data-reveal data-d="1">
+            For a long time, I felt <strong>invisible</strong>. Not absent, just unnoticed.
+          </p>
+          <p class="story-block" data-reveal data-d="2">
+            A teacher, and a few friends who kept showing up, changed that.
+          </p>
+          <p class="story-block" data-reveal data-d="3">
+            I started staying on the front foot,
+            <strong>learning in public, building in motion.</strong>
+          </p>
+          <a href="https://www.youtube.com/@TarunAsthana" class="top-link" target="_blank" data-reveal data-d="3" style="margin-top:1.5vh; align-self:flex-start; background:#1a1a1a; border-color:#1a1a1a; color:#d4d4d4;"><i data-lucide="play-circle" class="cta-icon"></i>See my YouTube Experiment</a>
+        </div>
+        <div class="story-right">
+          <div class="story-stat" data-reveal>
+            <span class="stat-num">AIR 25</span>
+            <span class="stat-label">design aptitude rank</span>
+          </div>
+          <div class="story-stat" data-reveal data-d="2">
+            <span class="stat-num">National Winner</span>
+            <span class="stat-label">Dashreels Arena</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. CAPABILITY -->
+      <section class="s-capability">
+        <div class="s-label" data-reveal>What I actually do</div>
+        <div class="cap-blocks">
+          <div class="cap-block" data-reveal>
+            <i data-lucide="eye" class="cap-icon"></i>
+            <div class="cap-title">Understanding People</div>
+            <div class="cap-desc">Seeing intent beyond surface-level behavior. Finding the signal in what people say, think &amp; do.</div>
+          </div>
+          <div class="cap-block" data-reveal data-d="1">
+            <i data-lucide="pen-tool" class="cap-icon"></i>
+            <div class="cap-title">Making Things</div>
+            <div class="cap-desc">Translating ideas into work that looks and feels right. From visual identity to content systems.</div>
+          </div>
+          <div class="cap-block" data-reveal data-d="2">
+            <i data-lucide="zap" class="cap-icon"></i>
+            <div class="cap-title">Staying Adaptive</div>
+            <div class="cap-desc">Moving between strategy and execution without losing the thread. Comfortable in ambiguity.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. CTA -->
+      <section class="s-cta">
+        <p class="cta-text" data-reveal>
+          If you're building something meaningful and need someone who can think, create, and follow through, I'd be glad to contribute.
+        </p>
+        <div class="cta-links" data-reveal data-d="1">
+          <a href="mailto:tarunasthana25@gmail.com" class="cta-link"><i data-lucide="mail" class="cta-icon"></i>Email me</a>
+          <a href="https://www.linkedin.com/in/tarunnasthana" class="cta-link outline" target="_blank"><i data-lucide="arrow-up-right" class="cta-icon"></i>LinkedIn</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+
+    // ── Icons ─────────────────────────────────────────────────────────────────
+    lucide.createIcons();
+
+    // ── Panel width ───────────────────────────────────────────────────────────
+    function sizePanel() {
+      const W = window.innerWidth;
+      const panelW = W - W * 0.02 - W * 0.05 - 340 - 50;
+      document.getElementById('about-panel').style.width = panelW + 'px';
+    }
+    sizePanel();
+
+    // ── Slightly slowed scroll ────────────────────────────────────────────────
+    const panel = document.getElementById('about-panel');
+    panel.addEventListener('wheel', e => {
+      e.preventDefault();
+      panel.scrollBy({ top: e.deltaY * 0.78, behavior: 'auto' });
+    }, { passive: false });
+
+    // ── Scroll progress bar ───────────────────────────────────────────────────
+    const scrollFill = document.getElementById('scroll-fill');
+    panel.addEventListener('scroll', () => {
+      const pct = panel.scrollTop / (panel.scrollHeight - panel.clientHeight) || 0;
+      scrollFill.style.width = (pct * 100) + '%';
+    });
+
+    // ── Scroll reveal via IntersectionObserver ────────────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { root: panel, threshold: 0.12 });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+    // ── Babylon.js ────────────────────────────────────────────────────────────
+    const canvas = document.getElementById('moon-canvas');
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, adaptToDeviceRatio: true });
+    const scene  = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+    const camera = new BABYLON.ArcRotateCamera('cam', -Math.PI / 2, Math.PI / 2, 3, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerBetaLimit = Math.PI / 2;
+    camera.upperBetaLimit = Math.PI / 2;
+    camera.inputs.removeByType('ArcRotateCameraMouseWheelInput');
+    camera.inputs.removeByType('ArcRotateCameraMultiTouchInput');
+    canvas.addEventListener('wheel',     e => e.preventDefault(), { passive: false });
+    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+    const hem = new BABYLON.HemisphericLight('hem', new BABYLON.Vector3(0, 1, 0), scene);
+    hem.intensity   = 1.5;
+    hem.diffuse     = new BABYLON.Color3(1, 1, 1);
+    hem.groundColor = new BABYLON.Color3(0.6, 0.6, 0.7);
+    const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, -0.8, -2), scene);
+    sun.intensity = 1.5;
+
+    BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'moon.glb', scene).then(({ meshes }) => {
+      const root = meshes[0];
+      const { min, max } = root.getHierarchyBoundingVectors(true);
+      const size = max.subtract(min);
+      camera.target = min.add(size.scale(0.5));
+      camera.radius = Math.max(size.x, size.y, size.z) * 1.6;
+
+      camera.alpha = Math.PI / 2;
+
+      let spinning = true;
+      const FAST = 0.09, SLOW = 0.0012, DECAY = 1600, t0 = performance.now();
+      scene.registerBeforeRender(() => {
+        if (!spinning) return;
+        const p    = Math.min((performance.now() - t0) / DECAY, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        camera.alpha += FAST + (SLOW - FAST) * ease;
+      });
+
+      let isOpen = false, pointerStart = null, hasDragged = false;
+
+      canvas.addEventListener('pointerdown', e => {
+        pointerStart = { x: e.clientX, y: e.clientY };
+        hasDragged   = false;
+        spinning     = false;
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5) {
+          if (!hasDragged) toggleOpen();
+          hasDragged = true;
+        }
+      });
+      canvas.addEventListener('pointerup', () => {
+        spinning     = true;
+        pointerStart = null;
+      });
+
+      function toggleOpen() {
+        isOpen = !isOpen;
+        canvas.classList.toggle('open', isOpen);
+        canvas.style.cursor = isOpen ? 'grab' : 'pointer';
+
+        const hint = document.getElementById('moon-hint');
+        if (isOpen) {
+          hint.classList.add('hidden');
+        } else {
+          hint.classList.remove('hidden');
+          hint.style.animation = 'none';
+          hint.offsetWidth;
+          hint.style.animation = 'typewriter-loop 5s infinite';
+          panel.scrollTop = 0;
+        }
+
+        document.getElementById('moon-label').classList.toggle('visible', isOpen);
+        document.getElementById('about-panel').classList.toggle('visible', isOpen);
+        setTimeout(() => engine.resize(), 750);
+      }
+    });
+
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener('resize', () => { engine.resize(); sizePanel(); });
+  </script>
+</body>
+</html>

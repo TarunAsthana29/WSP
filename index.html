@@ -145,7 +145,7 @@
     .btn-group {
       position: fixed;
       bottom: calc(8vh + 100px);
-      right: calc(3vw + 100px);
+      right: calc(3vw + 60px);
       display: flex;
       gap: calc(1rem + 20px);
       align-items: center;
@@ -191,12 +191,21 @@
     }
 
     .btn-grey {
-      background: rgba(210,210,210,0.15);
-      color: #ccc;
-      border: 1.5px solid rgba(200,200,200,0.35);
-      outline: 0.25vw solid rgba(200,200,200,0.45);
+      background: #d6d6d6;
+      color: #2a2a2a;
+      border: 1.5px solid #b0b0b0;
+      outline: 0.25vw solid rgba(180,180,180,0.6);
       outline-offset: 0.15vw;
     }
+
+    .btn-heart {
+      background: rgba(220,60,60,0.12);
+      color: #f08080;
+      border: 1.5px solid rgba(220,80,80,0.35);
+      outline: 0.25vw solid rgba(220,80,80,0.3);
+      outline-offset: 0.15vw;
+    }
+    .heart-label { color: rgba(255,160,160,0.85); }
 
     .btn-label {
       font-size: 1vw;
@@ -235,9 +244,9 @@
 
     .tagline {
       position: fixed;
-      bottom: calc(4vh + 50px);
-      left: calc(4vw + 80px);
-      font-size: calc(1.1vw + 5px);
+      bottom: calc(4vh + 25px);
+      left: calc(4vw + 50px);
+      font-size: calc(0.95vw + 4px);
       font-weight: 400;
       font-style: italic;
       color: #ffffff;
@@ -304,8 +313,12 @@
       <span class="btn-label orange-label">my work</span>
     </div>
     <div class="btn-wrap">
-      <a href="#" class="btn btn-grey">GO TO MOON &nbsp;→</a>
+      <a href="moon.html" class="btn btn-grey">GO TO MOON &nbsp;→</a>
       <span class="btn-label grey-label">about me</span>
+    </div>
+    <div class="btn-wrap">
+      <a href="https://www.behance.net/gallery/228775949/Yaad-Hai-Na-Campaign" class="btn btn-heart" target="_blank">♥ &nbsp;YAAD HAI NA</a>
+      <span class="btn-label heart-label">closest to my heart</span>
     </div>
   </div>
 
