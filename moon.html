@@ -21,7 +21,7 @@
 
     .back {
       position: fixed; top: 3vh; left: 3vw;
-      font-size: 0.82vw; font-weight: 700;
+      font-size: clamp(0.65rem, 0.82vw, 0.82rem); font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
       text-decoration: none; color: #3a3a44;
       z-index: 30; transition: opacity 0.2s;
@@ -33,7 +33,7 @@
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       color: #fff;
-      font-weight: 700; font-size: 1.3vw;
+      font-weight: 700; font-size: clamp(0.75rem, 1.3vw, 1.15rem);
       letter-spacing: 0.12em; text-transform: uppercase;
       white-space: nowrap; pointer-events: none;
       z-index: 11;
@@ -71,7 +71,7 @@
       left: calc(100vw - 50px - 170px);
       transform: translateX(-50%);
       top: calc(50% - 170px - 3.8vw - 14px);
-      font-weight: 700; font-size: 3vw;
+      font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.4rem);
       letter-spacing: 0.04em; text-transform: uppercase;
       color: #3a3a44; text-align: center;
       pointer-events: none; z-index: 12;
@@ -571,11 +571,14 @@
       const W = window.innerWidth;
       let panelW;
       if (W < 640) {
-        panelW = W - W * 0.01 - 12 - 150 - 20; // mobile: smaller moon (150px), 12px margin
+        panelW = W - W * 0.01 - 12 - 150 - 20;
+      } else if (W < 900) {
+        // Narrow desktop: moon shrinks to 260px effectively, reduce gap
+        panelW = W - W * 0.02 - W * 0.04 - 260 - 30;
       } else {
         panelW = W - W * 0.02 - W * 0.05 - 340 - 50;
       }
-      document.getElementById('about-panel').style.width = Math.max(panelW, 140) + 'px';
+      document.getElementById('about-panel').style.width = Math.max(panelW, 160) + 'px';
     }
     sizePanel();
 
