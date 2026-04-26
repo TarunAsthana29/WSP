@@ -289,6 +289,57 @@
       100% { background-position: -50% 0; }
     }
 
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .welcome { font-size: 3.8vw; }
+
+      .avatar {
+        width: 58vw;
+        top: 11vh;
+        left: 50%;
+      }
+
+      .bio {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: 26vh;
+        text-align: center;
+        max-width: 88vw;
+        width: 88vw;
+      }
+      .bio-line1 { font-size: 4.2vw; }
+      .bio-line2 { font-size: 3.8vw; }
+
+      .btn-group {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 5vh;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        width: 92vw;
+      }
+
+      .btn {
+        width: 42vw;
+        height: 12vw;
+        font-size: 3.2vw;
+        border-radius: 3vw;
+      }
+
+      .btn-label { font-size: 3.2vw; margin-top: 6px; }
+
+      .tagline {
+        font-size: 3.4vw;
+        left: 5vw;
+        bottom: 1.5vh;
+      }
+    }
+
   </style>
 </head>
 <body>

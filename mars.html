@@ -347,6 +347,65 @@
       font-size: 0.85em;
       top: 1px;
     }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .back { font-size: 3vw; top: 2vh; }
+      #mars-hint { font-size: 4vw; }
+
+      #mars-canvas {
+        width: 260px; height: 260px;
+        transition: width  0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    height 0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    left   0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    top    0.6s cubic-bezier(0.34,1.1,0.64,1);
+      }
+      #mars-canvas.open {
+        width: 130px; height: 130px;
+        left: 50%;
+        top: 80px;
+        transform: translate(-50%, 0);
+      }
+
+      #mars-label {
+        font-size: 5vw;
+        left: 50%;
+        top: calc(80px + 130px + 6px);
+        transform: translateX(-50%);
+      }
+
+      #side-panel {
+        top: auto;
+        bottom: 6px;
+        left: 0;
+        transform: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100vw;
+        padding: 0 6px;
+        gap: 5px;
+      }
+
+      .side-pill {
+        width: auto;
+        font-size: 2.5vw;
+        padding: 6px 10px;
+        white-space: nowrap;
+      }
+
+      #proj-grid { grid-template-columns: 1fr; }
+
+      #proj-detail { flex-direction: column; gap: 8px; }
+
+      #proj-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 0;
+        width: 100%;
+        gap: 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -822,6 +881,58 @@
     function sizeDetail() {
       const W  = window.innerWidth;
       const H  = window.innerHeight;
+
+      if (W < 640) {
+        const MARGIN   = 10;
+        const TOP      = 230;
+        const NAV_COL_W = 40;
+        const NAV_GAP   = 8;
+        const totalW   = W - MARGIN * 2;
+        const panelW   = totalW - NAV_COL_W - NAV_GAP - 10;
+        const panelH   = H - TOP - 55;
+        const contentH = panelH - 10;
+
+        projDetail.style.top    = TOP + 'px';
+        projDetail.style.left   = MARGIN + 'px';
+        projDetail.style.width  = totalW + 'px';
+        projContent.style.width  = panelW + 'px';
+        projContent.style.height = contentH + 'px';
+        projContent.style.borderRadius = '12px';
+
+        const pad        = contentH * 0.04;
+        const numSz      = Math.max(18, contentH * 0.10);
+        const titSz      = Math.max(11, contentH * 0.045);
+        const catSz      = Math.max(8,  contentH * 0.028);
+        const fieldLblSz = Math.max(7,  contentH * 0.026);
+        const fieldValSz = Math.max(8,  contentH * 0.036);
+        const fieldPad   = Math.max(5,  contentH * 0.025);
+        const pillSz     = Math.max(7,  NAV_COL_W * 0.28);
+
+        projContent.querySelectorAll('.detail-header').forEach(h => {
+          h.style.padding = `${pad}px ${pad}px ${pad * 0.5}px`;
+        });
+        projContent.querySelectorAll('.detail-num').forEach(n => n.style.fontSize = numSz + 'px');
+        projContent.querySelectorAll('.detail-title').forEach(t => t.style.fontSize = titSz + 'px');
+        projContent.querySelectorAll('.detail-cat').forEach(c => c.style.fontSize = catSz + 'px');
+        projContent.querySelectorAll('.proj-field').forEach(f => { f.style.padding = `${fieldPad}px`; });
+        projContent.querySelectorAll('.field-label').forEach(l => {
+          l.style.fontSize = fieldLblSz + 'px';
+          l.style.marginBottom = (fieldLblSz * 0.3) + 'px';
+        });
+        projContent.querySelectorAll('.field-value').forEach(v => {
+          v.style.fontSize = fieldValSz + 'px';
+          v.style.color = '#111';
+        });
+        projContent.querySelectorAll('.field-summary').forEach(v => { v.style.fontWeight = '450'; });
+        projNav.querySelectorAll('.proj-nav-pill').forEach(p => {
+          p.style.fontSize  = pillSz + 'px';
+          p.style.padding   = `${pillSz * 0.55}px 0`;
+          p.style.width     = NAV_COL_W + 'px';
+          p.style.textAlign = 'center';
+        });
+        return;
+      }
+
       const MARS_OPEN          = 340;
       const MARS_RIGHT_MARGIN  = W * 0.05;
       const LEFT_MARGIN        = W * 0.012;   // 1.2vw — aligns with #proj-detail left
@@ -917,6 +1028,34 @@
       const W   = window.innerWidth;
       const H   = window.innerHeight;
       const GAP = 8;
+
+      if (W < 640) {
+        const GRID_TOP = 250; // below open mars (80px top + 130px height + label ~40px)
+        const MARGIN   = 10;
+        const gridW    = W - MARGIN * 2;
+        const gridH    = H - GRID_TOP - 50; // leave space for side pills at bottom
+        cardH = Math.min(80, Math.max(55, (gridH - 4 * GAP) / 5));
+
+        document.getElementById('proj-wrap').style.top  = GRID_TOP + 'px';
+        document.getElementById('proj-wrap').style.left = MARGIN + 'px';
+        grid.style.width        = gridW + 'px';
+        grid.style.gridAutoRows = cardH + 'px';
+
+        const pad   = cardH * 0.10;
+        const numSz = cardH * 0.28;
+        const titSz = Math.max(9, cardH * 0.10 + 4);
+        const sumSz = Math.max(8, cardH * 0.09);
+        allBtns.forEach(b => { b.style.borderRadius = (cardH * 0.08) + 'px'; });
+        grid.querySelectorAll('.proj-top').forEach(t => { t.style.padding = `${pad}px`; });
+        grid.querySelectorAll('.proj-num').forEach(n => { n.style.fontSize = numSz + 'px'; });
+        grid.querySelectorAll('.proj-title').forEach(t => { t.style.fontSize = titSz + 'px'; });
+        grid.querySelectorAll('.proj-summary').forEach(s => {
+          s.style.padding  = `${pad * 0.5}px ${pad}px`;
+          s.style.fontSize = sumSz + 'px';
+        });
+        return;
+      }
+
       const MARS_OPEN          = 340;
       const MARS_RIGHT_MARGIN  = W * 0.05;
       const LEFT_MARGIN        = W * 0.02 + 140;

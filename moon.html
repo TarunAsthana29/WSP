@@ -382,6 +382,46 @@
       border: 1.5px solid rgba(0,0,0,0.2);
     }
     .cta-link.outline:hover { border-color: #c8501a; color: #c8501a; opacity: 1; transform: translateY(-2px); }
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .back { font-size: 3vw; }
+      #moon-hint { font-size: 4vw; }
+
+      #moon-canvas { width: 260px; height: 260px; }
+
+      #moon-canvas.open {
+        width: 150px; height: 150px;
+        left: calc(100vw - 12px - 75px);
+      }
+
+      #moon-label {
+        font-size: 4.5vw;
+        left: calc(100vw - 12px - 75px);
+        top: calc(50% - 75px - 4.5vw - 10px);
+      }
+
+      #about-panel { top: 0; left: 1vw; height: 100vh; }
+
+      .s-hero { padding: 5vh 0 3vh; }
+      .hero-title { font-size: clamp(1.3rem, 6vw, 2rem); }
+      .hero-sub { font-size: clamp(0.78rem, 3.5vw, 1rem); }
+
+      .identity-text { font-size: clamp(0.82rem, 3.8vw, 1.1rem); margin-left: 0; }
+
+      .s-story { flex-direction: column; gap: 4vh; }
+      .story-right { display: none; }
+      .story-block { font-size: clamp(0.82rem, 3.5vw, 1rem); max-width: 100%; }
+
+      .cap-blocks { flex-direction: column; gap: 16px; }
+
+      .top-links { gap: 8px; }
+      .top-link { font-size: clamp(0.6rem, 2.8vw, 0.75rem); padding: 0.4em 0.9em; }
+
+      .cta-text { font-size: clamp(0.82rem, 3.5vw, 1.1rem); }
+      .cta-link { font-size: clamp(0.7rem, 3vw, 0.88rem); padding: 0.7em 1.4em; }
+      .cta-links { flex-wrap: wrap; gap: 10px; justify-content: center; }
+    }
+
     /* ── Scroll progress ── */
     #scroll-bar {
       position: sticky; top: 0;
@@ -529,8 +569,13 @@
     // ── Panel width ───────────────────────────────────────────────────────────
     function sizePanel() {
       const W = window.innerWidth;
-      const panelW = W - W * 0.02 - W * 0.05 - 340 - 50;
-      document.getElementById('about-panel').style.width = panelW + 'px';
+      let panelW;
+      if (W < 640) {
+        panelW = W - W * 0.01 - 12 - 150 - 20; // mobile: smaller moon (150px), 12px margin
+      } else {
+        panelW = W - W * 0.02 - W * 0.05 - 340 - 50;
+      }
+      document.getElementById('about-panel').style.width = Math.max(panelW, 140) + 'px';
     }
     sizePanel();
 
