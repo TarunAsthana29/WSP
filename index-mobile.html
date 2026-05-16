@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tarun Asthana</title>
+
+  <style>
+    /* ─── Garet — same paths your site already uses ─── */
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Heavy.ttf')        format('truetype'); font-weight:900; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20ExtraBold.ttf')    format('truetype'); font-weight:800; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Bold.ttf')         format('truetype'); font-weight:700; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Medium.ttf')       format('truetype'); font-weight:500; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20MediumItalic.ttf') format('truetype'); font-weight:500; font-style:italic; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Book.ttf')         format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20BookItalic.ttf')   format('truetype'); font-weight:400; font-style:italic; font-display:swap; }
+
+    /* ─── Tokens (60/30/10, pearl + terracotta + ink) ─── */
+    :root {
+      --pearl-warm: #FCF8F1;
+      --pearl:      #FBFAF6;
+      --pearl-deep: #F4F1EC;
+      --terracotta: #CC6000;
+      --terracotta-soft: rgba(204,96,0,0.5);
+      --ink: #0F0F0F;
+      --ink-warm: #1a1008;
+      --ink-muted: rgba(15,15,15,0.55);
+      --ink-soft:  rgba(15,15,15,0.45);
+      --rule-warm: rgba(15,15,15,0.18);
+      --warm-shadow: rgba(80,40,10,0.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--pearl);
+      color: var(--ink);
+      font-family: 'Garet', sans-serif;
+      font-weight: 500;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Stage: positioned full-bleed; warm/cool ambient washes
+           live underneath everything else ─── */
+    .stage {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 60%,
+                  var(--pearl-warm) 0%,
+                  var(--pearl) 60%,
+                  var(--pearl-deep) 100%);
+      overflow: hidden;
+    }
+    .stage::before {
+      /* warm light, upper-right — single static source */
+      content: '';
+      position: absolute;
+      top: -30%; right: -10%;
+      width: 70%; height: 110%;
+      background: radial-gradient(circle at 65% 35%,
+                  rgba(204,96,0,0.18) 0%,
+                  rgba(204,96,0,0.07) 28%,
+                  rgba(204,96,0,0.02) 55%,
+                  transparent 75%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+    .stage::after {
+      /* cool ambient floor wash for balance */
+      content: '';
+      position: absolute;
+      bottom: -20%; left: 5%;
+      width: 70%; height: 50%;
+      background: radial-gradient(ellipse at center,
+                  rgba(40,60,80,0.06) 0%,
+                  transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Paper grain — fixed SVG turbulence over the stage */
+    .grain {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      mix-blend-mode: multiply;
+      z-index: 1;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+    }
+
+    /* ─── Top slate row ─── */
+    .slate-top {
+      position: fixed;
+      top: clamp(20px, 3vh, 40px);
+      left: clamp(20px, 3.8vw, 56px);
+      right: clamp(20px, 3.8vw, 56px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: clamp(9px, 0.78vw, 11px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-muted);
+      z-index: 4;
+    }
+    .slate-left { display: flex; align-items: center; gap: clamp(8px, 1vw, 14px); }
+    .slate-right { display: flex; gap: clamp(12px, 2vw, 28px); }
+    .slate-dot { color: var(--terracotta); }
+    .slate-divider {
+      display: inline-block;
+      width: 28px; height: 1px;
+      background: rgba(15,15,15,0.25);
+    }
+    .slate-name { color: var(--ink); }
+    @media (max-width: 640px) {
+      .slate-right .hide-mob { display: none; }
+      .slate-divider, .slate-left .hide-mob { display: none; }
+    }
+
+    /* ─── Centerpiece: avatar + name ─── */
+    .center {
+      position: absolute;
+      inset: 0;
+      padding: clamp(80px, 11vh, 120px) clamp(20px, 3.8vw, 56px) clamp(160px, 18vh, 200px);
+      display: flex;
+      align-items: center;
+      gap: clamp(20px, 4vw, 56px);
+      z-index: 2;
+    }
+    .avatar-col {
+      position: relative;
+      width: clamp(200px, 26vw, 380px);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .avatar-shadow {
+      position: absolute;
+      bottom: 7%;
+      width: 75%;
+      height: 6%;
+      background: radial-gradient(ellipse at center,
+                  var(--warm-shadow) 0%,
+                  rgba(80,40,10,0) 70%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+    .avatar {
+      position: relative;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+      filter: drop-shadow(0 22px 32px var(--warm-shadow))
+              drop-shadow(0 0 24px rgba(204,96,0,0.10));
+      animation: avatar-float 4s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes avatar-float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .name-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(16px, 2.6vh, 28px);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 1vw, 14px);
+      font-size: clamp(10px, 0.92vw, 13px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+    .eyebrow-rule {
+      display: inline-block;
+      width: clamp(22px, 2.8vw, 40px);
+      height: 1.5px;
+      background: var(--terracotta);
+    }
+    .name {
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.88;
+      color: var(--ink);
+    }
+    .name-im {
+      display: block;
+      font-weight: 500;
+      font-style: italic;
+      color: rgba(15,15,15,0.55);
+      font-size: clamp(34px, 5.7vw, 82px);
+      letter-spacing: -0.01em;
+      margin-bottom: clamp(-12px, -1vw, -6px);
+    }
+    .name-tarun {
+      font-size: clamp(88px, 13.3vw, 192px);
+      color: var(--terracotta);
+    }
+    .name-dot { color: var(--terracotta-soft); }
+
+    .bio-italic {
+      margin: 0;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--ink-warm);
+      font-size: clamp(15px, 1.7vw, 24px);
+      line-height: 1.5;
+      max-width: 540px;
+      text-wrap: pretty;
+    }
+    .bio-accent {
+      color: var(--terracotta);
+      font-weight: 700;
+      font-style: normal;
+    }
+    .bio-sub {
+      margin: 0;
+      font-weight: 500;
+      color: var(--ink-muted);
+      font-size: clamp(13px, 1.1vw, 16px);
+      line-height: 1.75;
+      max-width: 480px;
+      text-wrap: pretty;
+    }
+
+    /* ─── Slate footer ─── */
+    .slate-bottom {
+      position: fixed;
+      bottom: clamp(20px, 3vh, 40px);
+      left: clamp(20px, 3.8vw, 56px);
+      right: clamp(20px, 3.8vw, 56px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: clamp(20px, 4vw, 56px);
+      z-index: 4;
+    }
+    .motto-label {
+      font-size: clamp(9px, 0.78vw, 11px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .motto-line {
+      font-size: clamp(16px, 1.55vw, 22px);
+      font-style: italic;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* ─── Paper-card CTAs ─── */
+    .ctas {
+      display: flex;
+      align-items: stretch;
+      gap: clamp(6px, 0.7vw, 10px);
+    }
+    .cta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: clamp(10px, 0.9vw, 12px) clamp(16px, 1.5vw, 22px) clamp(12px, 1vw, 14px);
+      min-width: clamp(120px, 12vw, 172px);
+      border-radius: clamp(10px, 0.9vw, 12px);
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.22s ease, background 0.22s ease;
+      will-change: transform;
+    }
+    .cta-paper {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(15,15,15,0.12);
+      color: var(--ink);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+                  0 2px 4px rgba(0,0,0,0.04);
+    }
+    .cta-paper:hover {
+      background: rgba(255,255,255,0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+                  0 8px 18px rgba(80,40,10,0.10),
+                  0 2px 4px rgba(0,0,0,0.04);
+    }
+    .cta-primary {
+      background: var(--terracotta);
+      border: 1px solid var(--terracotta);
+      color: var(--pearl);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset,
+                  0 8px 22px rgba(204,96,0,0.28),
+                  0 2px 4px rgba(0,0,0,0.06);
+    }
+    .cta-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.07);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset,
+                  0 12px 28px rgba(204,96,0,0.36),
+                  0 2px 4px rgba(0,0,0,0.06);
+    }
+    .cta-eyebrow {
+      font-size: clamp(9px, 0.72vw, 10px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: rgba(15,15,15,0.45);
+    }
+    .cta-paper.cta-heart .cta-eyebrow { color: var(--terracotta); }
+    .cta-primary .cta-eyebrow { color: rgba(255,255,255,0.7); }
+    .cta-label {
+      font-size: clamp(13px, 1.05vw, 14px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .cta-arrow {
+      width: 1em; height: 1em; flex-shrink: 0;
+      transition: transform 0.22s ease;
+    }
+    .cta:hover .cta-arrow { transform: translateX(3px); }
+
+    /* ─── Mobile layout ─── */
+    @media (max-width: 720px) {
+      .center {
+        flex-direction: column;
+        align-items: stretch;
+        padding: clamp(50px, 7vh, 70px) 20px clamp(240px, 38vh, 320px);
+        gap: 0;
+        justify-content: flex-start;
+      }
+      .avatar-col {
+        width: clamp(130px, 40vw, 160px);
+        align-self: center;
+        margin-bottom: clamp(10px, 2vh, 18px);
+      }
+      .avatar {
+        max-height: 170px;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        animation: avatar-float 4s ease-in-out infinite;
+      }
+      .name-col { gap: 10px; align-items: stretch; }
+      .name { line-height: 0.9; }
+      .name-im { font-size: clamp(24px, 7vw, 34px); margin-bottom: -4px; }
+      .name-tarun { font-size: clamp(66px, 19vw, 92px); }
+      .bio-italic { font-size: clamp(13px, 3.8vw, 16px); }
+      .bio-sub   { display: none; }
+
+      .slate-bottom {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .slate-bottom .motto { display: none; }
+      .ctas {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+      }
+      .cta { min-width: 0; }
+      .cta-mobile-motto {
+        display: block;
+        text-align: center;
+        font-size: 13px;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--ink-muted);
+        padding-top: 6px;
+      }
+    }
+    @media (min-width: 721px) {
+      .cta-mobile-motto { display: none; }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .avatar { animation: none; }
+      * { transition: none !important; }
+    }
+
+    /* Focus rings — accessible & on-brand */
+    a:focus-visible {
+      outline: 2px solid var(--terracotta);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+    .cta:focus-visible { outline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+  <div class="stage" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+
+  <main class="center">
+    <div class="avatar-col">
+      <div class="avatar-shadow"></div>
+      <img class="avatar" src="assets/avatar.png" alt="Tarun Asthana" />
+    </div>
+    <div class="name-col">
+
+      <h1 class="name">
+        <span class="name-im">I'm</span>
+        <span class="name-tarun">Tarun</span><span class="name-dot">.</span>
+      </h1>
+      <p class="bio-italic">
+        I started with a <span class="bio-accent">paintbrush</span>, found my way to <span class="bio-accent">marketing</span>.
+      </p>
+      <p class="bio-sub">
+        I work at the intersection of how things look, what they mean, and why people care.
+      </p>
+    </div>
+  </main>
+
+  <footer class="slate-bottom">
+    <div class="motto">
+      <div class="motto-label">Studio motto</div>
+      <div class="motto-line">Built Slow. Built Real.</div>
+    </div>
+    <nav class="ctas" aria-label="Portfolio sections">
+      <a href="https://www.behance.net/gallery/228775949/Yaad-Hai-Na-Campaign"
+         class="cta cta-paper cta-heart"
+         target="_blank" rel="noopener">
+        <span class="cta-eyebrow">♥ Closest to my heart</span>
+        <span class="cta-label">
+          Yaad Hai Na
+          <svg class="cta-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 10h13M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+      <a href="moon-mobile.html" class="cta cta-paper">
+        <span class="cta-eyebrow">The story</span>
+        <span class="cta-label">
+          About me
+          <svg class="cta-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 10h13M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+      <a href="mars-mobile.html" class="cta cta-primary">
+        <span class="cta-eyebrow">The work</span>
+        <span class="cta-label">
+          Enter portfolio
+          <svg class="cta-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 10h13M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+      <div class="cta-mobile-motto">Built Slow. Built Real.</div>
+    </nav>
+  </footer>
+
+  <script>
+    // Subtle mouse parallax on the avatar (desktop only, respects reduced motion).
+    (function () {
+      const avatar = document.querySelector('.avatar');
+      if (!avatar) return;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || window.matchMedia('(pointer: coarse)').matches) return;
+
+      let raf = null, tx = 0, ty = 0, vx = 0, vy = 0;
+      function update() {
+        vx += (tx - vx) * 0.08;
+        vy += (ty - vy) * 0.08;
+        avatar.style.setProperty('--px', vx.toFixed(2) + 'px');
+        avatar.style.setProperty('--py', vy.toFixed(2) + 'px');
+        avatar.style.transform = `translate(${vx.toFixed(2)}px, ${vy.toFixed(2)}px)`;
+        if (Math.abs(tx - vx) > 0.05 || Math.abs(ty - vy) > 0.05) {
+          raf = requestAnimationFrame(update);
+        } else {
+          raf = null;
+        }
+      }
+      window.addEventListener('mousemove', (e) => {
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        tx = ((e.clientX - cx) / cx) * 8;
+        ty = ((e.clientY - cy) / cy) * 6;
+        if (!raf) raf = requestAnimationFrame(update);
+      }, { passive: true });
+      window.addEventListener('mouseleave', () => {
+        tx = 0; ty = 0;
+        if (!raf) raf = requestAnimationFrame(update);
+      });
+
+      // Float on top of parallax: combine both in a CSS variable approach.
+      // The CSS @keyframes avatar-float still drives translateY; mouse
+      // parallax overwrites .style.transform — this is intentional. The float
+      // resumes when the mouse pauses (after settle) because we leave the
+      // animation in place; the inline transform yields back when the
+      // browser composites the next frame from the keyframe.
+    })();
+  </script>
+</body>
+</html>

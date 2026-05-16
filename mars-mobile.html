@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Work — Tarun Asthana</title>
+  <style>
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Heavy.ttf') format('truetype'); font-weight:900; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Bold.ttf')  format('truetype'); font-weight:700; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Medium.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20Book.ttf')  format('truetype'); font-weight:400; }
+    @font-face { font-family:'Garet'; src:url('assets/Garet-Font/Garet%20MediumItalic.ttf')  format('truetype'); font-weight:500; font-style:italic; }
+
+    :root {
+      --pearl-warm: #FCF8F1;
+      --pearl:      #FBFAF6;
+      --pearl-deep: #F4F1EC;
+      --sandstone:  #F5EBE0;
+      --terracotta: #CC6000;
+      --terracotta-deep: #B85000;
+      --ink: #0F0F0F;
+      --ink-warm: #1a1008;
+      --ink-muted: rgba(15,15,15,0.55);
+      --ink-soft:  rgba(15,15,15,0.45);
+      --warm-shadow: rgba(80,40,10,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; min-height: 100vh;
+      background: var(--sandstone);
+      font-family: 'Garet', sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Stage: warm + cool ambient washes underneath everything */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%; right: -10%;
+      width: 70%; height: 110%;
+      background: radial-gradient(circle at 65% 35%,
+                  rgba(204,96,0,0.16) 0%,
+                  rgba(204,96,0,0.06) 28%,
+                  rgba(204,96,0,0.02) 55%,
+                  transparent 75%);
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -20%; left: 5%;
+      width: 70%; height: 50%;
+      background: radial-gradient(ellipse at center,
+                  rgba(40,60,80,0.05) 0%,
+                  transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Paper grain over the whole stage */
+    .grain {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      mix-blend-mode: multiply;
+      z-index: 1;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+    }
+
+    /* ── Slate top ── */
+    .slate-top {
+      position: fixed;
+      top: clamp(20px, 3vh, 40px);
+      left: clamp(20px, 3.8vw, 56px);
+      right: clamp(20px, 3.8vw, 56px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: clamp(9px, 0.78vw, 11px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-muted);
+      z-index: 25;
+    }
+    .slate-left {
+      display: flex; align-items: center; gap: clamp(8px, 1vw, 14px);
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: opacity 0.18s ease;
+    }
+    .slate-left:hover { opacity: 0.65; }
+    .slate-back {
+      color: var(--terracotta);
+      font-size: 1.2em;
+      transition: transform 0.22s ease;
+    }
+    .slate-left:hover .slate-back { transform: translateX(-3px); }
+    .slate-name { color: var(--ink); }
+    .slate-divider {
+      display: inline-block;
+      width: 28px; height: 1px;
+      background: rgba(15,15,15,0.25);
+    }
+    .slate-right { display: flex; gap: clamp(12px, 2vw, 28px); }
+    @media (max-width: 720px) {
+      .slate-divider, .slate-left .hide-mob, .slate-right .hide-mob { display: none; }
+    }
+
+    /* ── Slate footer motto ── */
+    .slate-motto {
+      position: fixed;
+      bottom: clamp(18px, 3vh, 36px);
+      left: clamp(20px, 3.8vw, 56px);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 25;
+      pointer-events: none;
+    }
+    .slate-motto .lbl {
+      font-size: clamp(9px, 0.7vw, 10px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+    .slate-motto .line {
+      font-size: clamp(14px, 1.3vw, 18px);
+      font-style: italic;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    @media (max-width: 640px) { .slate-motto { display: none; } }
+
+    .back { display: none !important; }
+
+    /* ── Back button ── */
+    .back-btn {
+      position: fixed;
+      top: clamp(20px, 3vh, 40px);
+      left: clamp(20px, 3.8vw, 56px);
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(184,80,0,0.35);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      color: var(--terracotta);
+      font-size: 1rem;
+      text-decoration: none;
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.22s ease, background 0.2s, border-color 0.2s;
+    }
+    .back-btn.visible { opacity: 1; pointer-events: all; }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.95);
+      border-color: var(--terracotta);
+      transform: translateX(-3px);
+    }
+
+    #mars-hint {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.75rem, 1.3vw, 1.15rem);
+      letter-spacing: 0.12em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 11;
+      animation: typewriter-loop 5s infinite;
+    }
+    #mars-hint.hidden { display: none; }
+
+    @keyframes typewriter-loop {
+      0%   { clip-path: inset(0 100% 0 0);   animation-timing-function: steps(22, end); }
+      38%  { clip-path: inset(0 0%   0 0);   animation-timing-function: steps(1,  end); }
+      55%  { clip-path: inset(0 0    0 0%);  animation-timing-function: steps(22, end); }
+      93%  { clip-path: inset(0 0    0 100%); }
+      100% { clip-path: inset(0 0    0 100%); }
+    }
+
+    #mars-canvas {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      cursor: pointer; outline: none; background: transparent;
+      transition: width  0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  height 0.7s cubic-bezier(0.34, 1.1, 0.64, 1),
+                  left   0.7s cubic-bezier(0.34, 1.1, 0.64, 1);
+      z-index: 10;
+    }
+    #mars-canvas.open {
+      width: 340px; height: 340px;
+      left: calc(100vw - 50px - 170px);
+      cursor: grab;
+    }
+
+    #mars-label {
+      position: fixed;
+      left: calc(100vw - 50px - 170px);
+      transform: translateX(-50%);
+      top: calc(50% - 170px - 3.8vw - 14px);
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #D97F55;
+      text-align: center;
+      pointer-events: none;
+      z-index: 12;
+      opacity: 0;
+      transition: opacity 0.4s ease 0.3s;
+    }
+    #mars-label.visible { opacity: 1; }
+
+    /* ── Project wrapper — top aligned ── */
+    #proj-wrap {
+      position: fixed;
+      top: 8vh;
+      left: calc(2vw + 140px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* ── Side panel — vertical category nav ── */
+    #side-panel {
+      position: fixed;
+      left: 1.2vw;
+      top: calc(50% - 115px);
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      width: 110px;
+      z-index: 15;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    #side-panel.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .side-pill {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.62rem, calc(0.55vw + 3px), 0.82rem);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      width: 100%;
+      text-align: center;
+      padding: 10px 8px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(184,80,0,0.3);
+      background: rgba(255,255,255,0.6);
+      color: #B85000;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+    }
+    .side-pill:hover  { background: rgba(255,131,41,0.15); border-color: #FF8329; }
+    .side-pill.active { background: #FF8329; color: #fff; border-color: #FF8329; }
+
+    /* ── Project grid ── */
+    #proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    /* Refined project cards — paper-card style w/ eyebrow */
+    .proj-btn {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(184,80,0,0.13);
+      border-radius: 14px;
+      cursor: pointer; overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      display: flex; flex-direction: column;
+      transform: translateX(-30px) scale(0.95);
+      transition: opacity 0.28s ease,
+                  transform 0.42s cubic-bezier(0.34, 1.2, 0.64, 1),
+                  background 0.2s,
+                  box-shadow 0.22s;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .proj-btn.visible  { opacity: 1; transform: translateX(0) scale(1); pointer-events: all; }
+    .proj-btn:hover    {
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+                  0 10px 22px rgba(80,40,10,0.10),
+                  0 2px 4px rgba(0,0,0,0.04);
+      transform: translateY(-2px);
+    }
+
+    .proj-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex: 0 0 50%;
+    }
+    .proj-num     { font-weight: 900; color: #CC6000; line-height: 1; }
+    .proj-title   { font-weight: 500; color: #1a1008; text-align: right; line-height: 1.2; text-transform: uppercase; max-width: 58%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .proj-summary {
+      flex: 1; font-weight: 500; color: rgba(26,16,8,0.58); line-height: 1.5;
+      border-top: 1px solid rgba(184,80,0,0.1); overflow: hidden;
+    }
+
+    /* ── Project detail panel ── */
+    #proj-detail {
+      position: fixed;
+      top: calc(8vh - 20px);
+      left: 1.2vw;
+      transform: translateX(40px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.34, 1.1, 0.64, 1);
+      z-index: 5;
+      display: flex;
+      flex-direction: row;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    #proj-detail.visible {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    #proj-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: stretch;
+      flex-shrink: 0;
+      margin-top: 25px;
+    }
+
+    .proj-nav-back {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: #B85000;
+      cursor: pointer;
+      padding: 0;
+      margin-right: 10px;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .proj-nav-back:hover { opacity: 0.5; }
+
+    .proj-nav-pill {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border-radius: 100px;
+      border: 1.5px solid rgba(184,80,0,0.3);
+      background: rgba(255,255,255,0.55);
+      color: #B85000;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+    }
+    .proj-nav-pill:hover { background: rgba(255,131,41,0.15); border-color: #FF8329; }
+    .proj-nav-pill.active { background: #FF8329; color: #fff; border-color: #FF8329; }
+
+    #proj-content {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(184,80,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.2s ease;
+      margin-left: 25px;
+      margin-top: 25px;
+    }
+    #proj-content.fading { opacity: 0; }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .detail-num   { font-weight: 900; color: #CC6000; line-height: 1; }
+    .detail-right { text-align: right; }
+    .detail-title { font-weight: 700; color: #1a1008; text-transform: uppercase; line-height: 1.1; }
+    .detail-cat   { font-weight: 500; color: #FF8329; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25em; }
+    .detail-divider { border: none; border-top: 1px solid rgba(184,80,0,0.1); margin: 0; }
+    /* ── Project fields grid ── */
+    .proj-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184,80,0,0.12) transparent;
+    }
+    .proj-fields-grid::-webkit-scrollbar { width: 3px; }
+    .proj-fields-grid::-webkit-scrollbar-thumb { background: rgba(184,80,0,0.15); border-radius: 3px; }
+
+    .proj-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-right: 1px solid rgba(184,80,0,0.08);
+      border-bottom: 1px solid rgba(184,80,0,0.08);
+    }
+    .proj-field.full-width {
+      grid-column: 1 / -1;
+      border-right: none;
+    }
+    .proj-field:last-child, .proj-field:nth-last-child(2):not(.full-width) {
+      border-bottom: none;
+    }
+    .proj-field:nth-child(even):not(.full-width) { border-right: none; }
+
+    .field-label {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #FF8329;
+      line-height: 1;
+    }
+    .field-value {
+      font-family: 'Garet', sans-serif;
+      font-weight: 500;
+      color: #111 !important;
+      line-height: 1.6;
+    }
+    .field-value.empty {
+      color: rgba(26,16,8,0.22);
+      font-style: italic;
+    }
+    .field-summary { font-weight: 450; }
+
+    /* ── Phase-grouped actions ── */
+    .actions-phases {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+    }
+    .phase-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .phase-label {
+      font-family: 'Garet', sans-serif;
+      font-weight: 700;
+      font-size: 0.7em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #FF8329;
+      border-bottom: 1.5px solid rgba(255,131,41,0.25);
+      padding-bottom: 3px;
+      margin-bottom: 3px;
+    }
+    .phase-item {
+      font-size: 0.9em;
+      line-height: 1.55;
+      padding-left: 14px;
+      position: relative;
+      color: #111;
+    }
+    .phase-item::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #FF8329;
+      opacity: 0.65;
+      font-size: 0.85em;
+      top: 1px;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .back { font-size: 3vw; top: 2vh; }
+      #mars-hint { font-size: 4vw; }
+
+      #mars-canvas {
+        width: 260px; height: 260px;
+        transition: width  0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    height 0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    left   0.7s cubic-bezier(0.34,1.1,0.64,1),
+                    top    0.6s cubic-bezier(0.34,1.1,0.64,1);
+      }
+      #mars-canvas.open {
+        width: 130px; height: 130px;
+        left: 50%;
+        top: 80px;
+        transform: translate(-50%, 0);
+      }
+
+      #mars-label {
+        font-size: 5vw;
+        left: 50%;
+        top: calc(80px + 130px + 6px);
+        transform: translateX(-50%);
+      }
+
+      #side-panel {
+        top: auto;
+        bottom: 6px;
+        left: 0;
+        transform: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100vw;
+        padding: 0 6px;
+        gap: 5px;
+      }
+
+      .side-pill {
+        width: auto;
+        font-size: 2.5vw;
+        padding: 6px 10px;
+        white-space: nowrap;
+      }
+
+      #proj-grid { grid-template-columns: 1fr; }
+
+      #proj-detail { flex-direction: column; gap: 8px; }
+
+      #proj-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 0;
+        width: 100%;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <a id="back-link" href="index-mobile.html" class="back-btn">←</a>
+
+  <aside class="slate-motto">
+    <div class="lbl">Studio motto</div>
+    <div class="line">Built Slow. Built Real.</div>
+  </aside>
+
+  <a href="index.html" class="back" id="back-link-legacy">← Back</a>
+  <canvas id="mars-canvas"></canvas>
+  <div id="mars-label">My Work</div>
+  <div id="mars-hint">GRAB &amp; SPIN THE MARS</div>
+
+  <div id="side-panel"></div>
+
+  <div id="proj-wrap">
+    <div id="proj-grid"></div>
+  </div>
+
+  <div id="proj-detail">
+    <div id="proj-nav"></div>
+    <div id="proj-content"></div>
+  </div>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script>
+    const CATEGORIES = ['ALL', 'CASE COMP', 'SELF-ASSIGNED', 'INTERNSHIP', 'ARTWORKS', 'PHOTOGRAPHY'];
+
+    const PROJECTS = [
+      {
+        num: '01', title: 'DashReels Growth', category: 'CASE COMP',
+        summary:  'Built creator-led funnel driving 1.39M views and conversions.',
+        context:  'Needed to prove short-form content can drive measurable growth beyond awareness in a competitive environment.',
+        role:     'Growth Strategist & Content Lead',
+        tasks:    'Build acquisition strategy · Create content · Drive conversions.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Analysed Gen-Z behavior and platform dynamics.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Applied AIDA funnel framework.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Produced 50+ reels across formats.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Tracked engagement and conversion metrics.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Executed full-funnel content system.</div>
+          </div>
+        </div>`,
+        results:  '1.39M views · 1,021 clicks · 206 installs · 12 trials.',
+        tools:    'Instagram, Analytics',
+        duration: 'Competition Timeline',
+      },
+      {
+        num: '02', title: 'Detoxie Rebranding', category: 'CASE COMP',
+        summary:  'Won 1st of 50 teams repositioning Detoxie in a 7-day sprint.',
+        context:  'Hard water haircare category had cluttered packaging and no clear benefit-led positioning. Competitive landscape showed gaps in design, semiotics, and claims hierarchy.',
+        role:     'Lead Strategist & Designer',
+        tasks:    'Reposition product through research and insights · Redesign packaging and communication · Build structured content hierarchy.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Analysed 4 competing brands across design and claims.</div>
+            <div class="phase-item">Synthesised 250+ reviews using AI-assisted ethnography.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Identified top 3 repeat-purchase drivers.</div>
+            <div class="phase-item">Built benefit-led positioning and content hierarchy.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Developed 5 packaging systems from 10 explorations.</div>
+            <div class="phase-item">Created 20 Amazon PDP creatives.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Conducted A/B testing with 30 users on clarity, trust, and purchase intent.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered 4 final SKUs with structured visual hierarchy.</div>
+          </div>
+        </div>`,
+        results:  '1st place out of 50 teams · 4 SKUs + 20 creatives delivered · Improved clarity, trust, and purchase intent.',
+        tools:    'ChatGPT, Gemini, Excel, Figma',
+        duration: '7 days',
+      },
+      {
+        num: '03', title: 'Yaad Hai Na', category: 'CASE COMP',
+        summary:  'Designed campaign addressing menstruation stigma using print.',
+        context:  'Men aged 45–60 avoided conversations around menstruation. Newspapers were their primary information source.',
+        role:     'Concept Developer, Researcher, Designer',
+        tasks:    'Identify behavioral barriers · Design campaign and messaging · Create visual identity.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Conducted audience profiling of target demographic.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Used curiosity-driven messaging and social comparison triggers.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Created campaign visuals, characters, and NGO identity.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Evaluated attention and recall effectiveness.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered print campaign and full branding.</div>
+          </div>
+        </div>`,
+        results:  'Built differentiated awareness approach · Increased engagement through behavioral triggers.',
+        tools:    'Design, Research',
+        duration: 'Jul 2023 – Aug 2023',
+      },
+      {
+        num: '04', title: 'MICanvas Marketing', category: 'SELF-ASSIGNED',
+        summary:  'Led campaigns driving 298% reach growth and 1025% CTR uplift.',
+        context:  'Handled multiple brand campaigns requiring integration of digital and on-ground marketing with measurable outcomes.',
+        role:     'Brand Communications Member',
+        tasks:    'Build content and performance strategies · Execute campaigns · Drive engagement and conversions.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Analysed audience behavior and funnels.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Built content strategies for multiple brands.</div>
+            <div class="phase-item">Applied funnel-based marketing approach.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Created 50+ assets across 25+ brands.</div>
+            <div class="phase-item">Led UGC campaigns.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Measured reach, CTR, and engagement metrics.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Executed digital and on-ground activations.</div>
+          </div>
+        </div>`,
+        results:  '152% activity growth · 298% reach growth · 1025% CTR uplift · 430+ shares.',
+        tools:    'Analytics, Content Strategy',
+        duration: 'MICA Tenure',
+      },
+      {
+        num: '05', title: 'Campus Confidence', category: 'SELF-ASSIGNED',
+        summary:  'Built 3-month workshop improving confidence of 40+ students.',
+        context:  'Students lacked confidence, communication skills, and ownership of learning. No structured system existed to address these gaps.',
+        role:     'Curator & Facilitator',
+        tasks:    'Identify behavioral gaps · Design and deliver workshop · Drive engagement and learning.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Conducted interviews and literature review.</div>
+            <div class="phase-item">Diagnosed communication and confidence gaps.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Applied Double Diamond framework.</div>
+            <div class="phase-item">Reframed problem to focus on student agency.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Built 86-day workshop curriculum.</div>
+            <div class="phase-item">Designed sessions, assignments, and exercises.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Measured engagement and collected feedback.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered weekly sessions and scaled via YouTube.</div>
+          </div>
+        </div>`,
+        results:  '40+ students impacted · Improved confidence and communication outcomes.',
+        tools:    'Workshops, Research, YouTube',
+        duration: 'Sep 2023 – Dec 2023',
+      },
+      {
+        num: '06', title: 'Arif Industries', category: 'ARTWORKS',
+        summary:  'Recreated 16 building visuals from obstructed real-world conditions.',
+        context:  'Buildings had aged with visual clutter (trees, wires, banners) and urban congestion, making clean photography impossible. Needed display-ready visuals and new artworks in a specific style.',
+        role:     'Visual Artist',
+        tasks:    'Capture and reconstruct building visuals · Remove obstructions and restore structure · Create paintings in a defined artistic style.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Captured multi-angle site photographs.</div>
+            <div class="phase-item">Studied architectural structures and artist style.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Combined fragmented visuals into reconstructed outputs.</div>
+            <div class="phase-item">Broke artist style into repeatable elements.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Reconstructed 16 buildings via stitching and editing.</div>
+            <div class="phase-item">Created 4 original paintings.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Iterated via client feedback and approvals.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered 16 visuals and 4 paintings.</div>
+          </div>
+        </div>`,
+        results:  'Enabled clean, display-ready building visuals · Successfully matched and extended artistic style.',
+        tools:    'Photoshop, Photography, Sketching',
+        duration: 'Mar 2023 – Nov 2023, Jul 2024 – Aug 2024',
+      },
+      {
+        num: '07', title: 'Documentary Film', category: 'SELF-ASSIGNED',
+        summary:  'Managed end-to-end production of a documentary film.',
+        context:  'Documentary required coordination across stakeholders and execution in a dynamic public exhibition space.',
+        role:     'Project Manager, Scriptwriter, Coordinator',
+        tasks:    'Develop script and narrative · Manage shoots and coordination · Deliver final film.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Studied subject background and prepared interview prompts.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Structured narrative and execution plan.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Wrote script and directed shoot setup.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Reviewed and refined edits.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered final documentary within timeline.</div>
+          </div>
+        </div>`,
+        results:  'Completed project within timeline · Delivered coherent narrative.',
+        tools:    'Video Editing, Scripting',
+        duration: 'May 2024 – Aug 2024',
+      },
+      {
+        num: '08', title: 'YouTube Growth', category: 'SELF-ASSIGNED',
+        summary:  'Grew art YouTube channel to 34,920 views and 664 watch hours.',
+        context:  'Needed to build audience from scratch in a competitive content ecosystem while balancing long and short-form content.',
+        role:     'Creator',
+        tasks:    'Develop content strategy · Produce and optimize content · Drive engagement and growth.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Analysed audience behavior and content formats.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Built long-form + Shorts content mix.</div>
+            <div class="phase-item">Focused on storytelling and engagement.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Created educational art content.</div>
+            <div class="phase-item">Optimised titles, thumbnails, and structure.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Tracked views and watch time metrics.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Published consistent content over 2+ years.</div>
+          </div>
+        </div>`,
+        results:  '34,920 views · 664 watch hours.',
+        tools:    'YouTube, Analytics',
+        duration: 'May 2021 – Jul 2023',
+      },
+      {
+        num: '09', title: 'Natkhat Media', category: 'INTERNSHIP',
+        summary:  'Designed campaigns and collateral for 12 clients as Senior Graphic Designer at Natkhat Media.',
+        context:  'Worked remotely as Senior Graphic Designer at a registered media organization, handling diverse client briefs requiring data visualization and brand consistency across print and digital.',
+        role:     'Senior Graphic Designer (Remote)',
+        tasks:    'Design visual campaigns aligned to client briefs · Develop digital templates · Create social media collateral for 12 clients.',
+        actions: `<div class="actions-phases">
+          <div class="phase-group">
+            <div class="phase-label">Research</div>
+            <div class="phase-item">Studied client briefs and data visualization objectives.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Strategy</div>
+            <div class="phase-item">Planned iterative refining process to align outputs with client requirements.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Design</div>
+            <div class="phase-item">Conceptualized and designed visual campaigns across client categories.</div>
+            <div class="phase-item">Developed digital templates and social media collateral for 12 clients.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Validation</div>
+            <div class="phase-item">Iterated through refinement cycles based on client feedback.</div>
+          </div>
+          <div class="phase-group">
+            <div class="phase-label">Delivery</div>
+            <div class="phase-item">Delivered brand-consistent assets across print and digital platforms.</div>
+          </div>
+        </div>`,
+        results:  'Campaigns and collateral delivered for 12 clients · Brand consistency maintained across print and digital.',
+        tools:    'Illustrator, Graphic Design',
+        duration: 'Sep 2023 – Jan 2024',
+      },
+    ];
+
+    // ── Build side panel category pills ──────────────────────────────────────
+    const filterBar = document.getElementById('side-panel');
+    let activeCategory = 'ALL';
+
+    CATEGORIES.forEach(cat => {
+      const pill = document.createElement('button');
+      pill.className = 'side-pill' + (cat === 'ALL' ? ' active' : '');
+      pill.dataset.cat = cat;
+      pill.textContent = cat;
+      pill.addEventListener('click', () => applyFilter(cat));
+      filterBar.appendChild(pill);
+    });
+
+    // ── Build project cards ───────────────────────────────────────────────────
+    const grid = document.getElementById('proj-grid');
+
+    PROJECTS.forEach((p, idx) => {
+      const btn = document.createElement('div');
+      btn.className = 'proj-btn';
+      btn.dataset.category = p.category;
+      btn.dataset.index = idx;
+      btn.innerHTML = `
+        <div class="proj-top">
+          <div class="proj-num">${p.num}</div>
+          <div class="proj-title">${p.title}</div>
+        </div>
+        <div class="proj-summary">${p.summary}</div>`;
+      btn.addEventListener('click', () => openProject(idx));
+      grid.appendChild(btn);
+    });
+
+    const allBtns = Array.from(grid.querySelectorAll('.proj-btn'));
+    let cardH = 0;
+
+    // ── Detail view ───────────────────────────────────────────────────────────
+    const projDetail  = document.getElementById('proj-detail');
+    const projNav     = document.getElementById('proj-nav');
+    const projContent = document.getElementById('proj-content');
+    let   currentProject = null;
+
+    // Wire the page back link to closeDetail when in detail view
+    document.getElementById('back-link').addEventListener('click', e => {
+      if (currentProject !== null) { e.preventDefault(); closeDetail(); }
+    });
+
+    // Build nav: number pills only
+    PROJECTS.forEach((p, idx) => {
+      const pill = document.createElement('button');
+      pill.className = 'proj-nav-pill';
+      pill.textContent = p.num;
+      pill.dataset.index = idx;
+      pill.addEventListener('click', () => navigateTo(idx));
+      projNav.appendChild(pill);
+    });
+
+    function renderContent(idx) {
+      const p = PROJECTS[idx];
+      function field(label, value, full = false, extraValClass = '') {
+        const cls = 'proj-field' + (full ? ' full-width' : '');
+        const valCls = 'field-value' + (extraValClass ? ' ' + extraValClass : '');
+        const val = value
+          ? `<div class="${valCls}">${value}</div>`
+          : `<div class="${valCls} empty">—</div>`;
+        return `<div class="${cls}"><div class="field-label">${label}</div>${val}</div>`;
+      }
+      projContent.innerHTML = `
+        <div class="detail-header">
+          <div class="detail-num">${p.num}</div>
+          <div class="detail-right">
+            <div class="detail-title">${p.title}</div>
+            <div class="detail-cat">${p.category}</div>
+          </div>
+        </div>
+        <hr class="detail-divider">
+        <div class="proj-fields-grid">
+          ${field('1-Line Summary', p.summary, true, 'field-summary')}
+          ${field('Context / Situation', p.context, true)}
+          ${field('Your Role', p.role)}
+          ${field('Tasks', p.tasks)}
+          ${field('Actions', p.actions, true)}
+          ${field('Results', p.results, true)}
+          ${field('Tools Used', p.tools)}
+          ${field('Duration', p.duration)}
+        </div>`;
+      sizeDetail();
+    }
+
+    function openProject(idx) {
+      currentProject = idx;
+
+      // Fade grid out, then show detail
+      allBtns.forEach(b => b.classList.remove('visible'));
+      filterBar.classList.remove('visible');
+
+      setTimeout(() => {
+        document.getElementById('proj-wrap').style.pointerEvents = 'none';
+        filterNavPills(activeCategory);
+        renderContent(idx);
+        updateNavPills(idx);
+        projDetail.classList.add('visible');
+      }, 280);
+    }
+
+    function closeDetail() {
+      projDetail.classList.remove('visible');
+      setTimeout(() => {
+        currentProject = null;
+        filterNavPills('ALL');  // reset all pills visible for next open
+        // Restore grid
+        allBtns.forEach(btn => { btn.style.display = ''; });
+        applyFilter(activeCategory);
+        filterBar.classList.add('visible');
+        grid.style.pointerEvents = 'all';
+        document.getElementById('proj-wrap').style.pointerEvents = '';
+        const matching = allBtns.filter(b => activeCategory === 'ALL' || b.dataset.category === activeCategory);
+        matching.forEach((btn, i) => setTimeout(() => btn.classList.add('visible'), i * 45));
+      }, 320);
+    }
+
+    function navigateTo(idx) {
+      if (idx === currentProject) return;
+      currentProject = idx;
+      updateNavPills(idx);
+      projContent.classList.add('fading');
+      setTimeout(() => {
+        renderContent(idx);
+        projContent.classList.remove('fading');
+      }, 210);
+    }
+
+    function updateNavPills(idx) {
+      projNav.querySelectorAll('.proj-nav-pill').forEach(pill =>
+        pill.classList.toggle('active', parseInt(pill.dataset.index) === idx));
+    }
+
+    function filterNavPills(cat) {
+      projNav.querySelectorAll('.proj-nav-pill').forEach(pill => {
+        const match = cat === 'ALL' || PROJECTS[parseInt(pill.dataset.index)].category === cat;
+        pill.style.display = match ? '' : 'none';
+      });
+    }
+
+    function sizeDetail() {
+      const W  = window.innerWidth;
+      const H  = window.innerHeight;
+
+      if (W < 640) {
+        const MARGIN   = 10;
+        const TOP      = 230;
+        const NAV_COL_W = 40;
+        const NAV_GAP   = 8;
+        const totalW   = W - MARGIN * 2;
+        const panelW   = totalW - NAV_COL_W - NAV_GAP - 10;
+        const panelH   = H - TOP - 55;
+        const contentH = panelH - 10;
+
+        projDetail.style.top    = TOP + 'px';
+        projDetail.style.left   = MARGIN + 'px';
+        projDetail.style.width  = totalW + 'px';
+        projContent.style.width  = panelW + 'px';
+        projContent.style.height = contentH + 'px';
+        projContent.style.borderRadius = '12px';
+
+        const pad        = contentH * 0.04;
+        const numSz      = Math.max(18, contentH * 0.10);
+        const titSz      = Math.max(11, contentH * 0.045);
+        const catSz      = Math.max(8,  contentH * 0.028);
+        const fieldLblSz = Math.max(7,  contentH * 0.026);
+        const fieldValSz = Math.max(8,  contentH * 0.036);
+        const fieldPad   = Math.max(5,  contentH * 0.025);
+        const pillSz     = Math.max(7,  NAV_COL_W * 0.28);
+
+        projContent.querySelectorAll('.detail-header').forEach(h => {
+          h.style.padding = `${pad}px ${pad}px ${pad * 0.5}px`;
+        });
+        projContent.querySelectorAll('.detail-num').forEach(n => n.style.fontSize = numSz + 'px');
+        projContent.querySelectorAll('.detail-title').forEach(t => t.style.fontSize = titSz + 'px');
+        projContent.querySelectorAll('.detail-cat').forEach(c => c.style.fontSize = catSz + 'px');
+        projContent.querySelectorAll('.proj-field').forEach(f => { f.style.padding = `${fieldPad}px`; });
+        projContent.querySelectorAll('.field-label').forEach(l => {
+          l.style.fontSize = fieldLblSz + 'px';
+          l.style.marginBottom = (fieldLblSz * 0.3) + 'px';
+        });
+        projContent.querySelectorAll('.field-value').forEach(v => {
+          v.style.fontSize = fieldValSz + 'px';
+          v.style.color = '#111';
+        });
+        projContent.querySelectorAll('.field-summary').forEach(v => { v.style.fontWeight = '450'; });
+        projNav.querySelectorAll('.proj-nav-pill').forEach(p => {
+          p.style.fontSize  = pillSz + 'px';
+          p.style.padding   = `${pillSz * 0.55}px 0`;
+          p.style.width     = NAV_COL_W + 'px';
+          p.style.textAlign = 'center';
+        });
+        return;
+      }
+
+      const MARS_OPEN          = 340;
+      const MARS_RIGHT_MARGIN  = W * 0.05;
+      const LEFT_MARGIN        = W * 0.012;   // 1.2vw — aligns with #proj-detail left
+      const GRID_GAP_FROM_MARS = 60;
+      const NAV_COL_W          = 52;          // fixed width for the vertical pill column
+      const NAV_GAP            = 14;
+
+      const totalW   = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
+      const panelW   = totalW - NAV_COL_W - NAV_GAP - 25;  // -25 for content margin-left
+      const panelH   = H * 0.84;
+      const contentH = panelH - 25;          // -25 for content margin-top
+
+      projDetail.style.width = totalW + 'px';
+      projContent.style.width  = panelW + 'px';
+      projContent.style.height = contentH + 'px';
+      projContent.style.borderRadius = (cardH * 0.08 || 14) + 'px';
+
+      const pad        = contentH * 0.04;
+      const numSz      = contentH * 0.10;   // reduced from 0.18
+      const titSz      = contentH * 0.045;  // reduced from 0.07
+      const catSz      = contentH * 0.028;
+      const fieldLblSz = Math.max(7,  contentH * 0.026);
+      const fieldValSz = Math.max(8,  contentH * 0.036);
+      const fieldPad   = contentH * 0.028;
+      const pillSz     = Math.max(7, NAV_COL_W * 0.22);
+
+      projContent.querySelectorAll('.detail-header').forEach(h => {
+        h.style.padding = `${pad}px ${pad}px ${pad * 0.5}px`;
+      });
+      projContent.querySelectorAll('.detail-num').forEach(n => n.style.fontSize = numSz + 'px');
+      projContent.querySelectorAll('.detail-title').forEach(t => t.style.fontSize = titSz + 'px');
+      projContent.querySelectorAll('.detail-cat').forEach(c => c.style.fontSize = catSz + 'px');
+      projContent.querySelectorAll('.proj-field').forEach(f => {
+        f.style.padding = `${fieldPad}px`;
+      });
+      projContent.querySelectorAll('.field-label').forEach(l => {
+        l.style.fontSize = fieldLblSz + 'px';
+        l.style.marginBottom = (fieldLblSz * 0.3) + 'px';
+      });
+      projContent.querySelectorAll('.field-value').forEach(v => {
+        v.style.fontSize = fieldValSz + 'px';
+        v.style.color = '#111';
+      });
+      projContent.querySelectorAll('.field-summary').forEach(v => {
+        v.style.fontWeight = '450';
+      });
+
+      projNav.querySelectorAll('.proj-nav-pill').forEach(p => {
+        p.style.fontSize  = pillSz + 'px';
+        p.style.padding   = `${pillSz * 0.55}px 0`;
+        p.style.width     = NAV_COL_W + 'px';
+        p.style.textAlign = 'center';
+      });
+    }
+
+    // ── Filter logic ──────────────────────────────────────────────────────────
+    let filterTimer = null;
+
+    function applyFilter(cat) {
+      activeCategory = cat;
+      if (filterTimer) clearTimeout(filterTimer);
+
+      filterBar.querySelectorAll('.side-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.cat === cat));
+
+      // Phase 1 — fade out all currently visible cards
+      allBtns.forEach(btn => btn.classList.remove('visible'));
+
+      // Phase 2 — collapse hidden, reset matching to start state
+      filterTimer = setTimeout(() => {
+        const matching = [];
+        allBtns.forEach(btn => {
+          const match = cat === 'ALL' || btn.dataset.category === cat;
+          btn.style.display = match ? '' : 'none';
+          btn.style.pointerEvents = '';
+          if (match) {
+            btn.classList.remove('visible');
+            matching.push(btn);
+          }
+        });
+
+        // Two frames so browser paints the collapsed + reset state before animating in
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          matching.forEach((btn, i) => {
+            setTimeout(() => btn.classList.add('visible'), i * 50);
+          });
+        }));
+      }, 290);
+    }
+
+    // ── Size grid & pills from viewport ──────────────────────────────────────
+    function sizeGrid() {
+      const W   = window.innerWidth;
+      const H   = window.innerHeight;
+      const GAP = 8;
+
+      if (W < 640) {
+        const GRID_TOP = 250; // below open mars (80px top + 130px height + label ~40px)
+        const MARGIN   = 10;
+        const gridW    = W - MARGIN * 2;
+        const gridH    = H - GRID_TOP - 50; // leave space for side pills at bottom
+        cardH = Math.min(80, Math.max(55, (gridH - 4 * GAP) / 5));
+
+        document.getElementById('proj-wrap').style.top  = GRID_TOP + 'px';
+        document.getElementById('proj-wrap').style.left = MARGIN + 'px';
+        grid.style.width        = gridW + 'px';
+        grid.style.gridAutoRows = cardH + 'px';
+
+        const pad   = cardH * 0.10;
+        const numSz = cardH * 0.28;
+        const titSz = Math.max(9, cardH * 0.10 + 4);
+        const sumSz = Math.max(8, cardH * 0.09);
+        allBtns.forEach(b => { b.style.borderRadius = (cardH * 0.08) + 'px'; });
+        grid.querySelectorAll('.proj-top').forEach(t => { t.style.padding = `${pad}px`; });
+        grid.querySelectorAll('.proj-num').forEach(n => { n.style.fontSize = numSz + 'px'; });
+        grid.querySelectorAll('.proj-title').forEach(t => { t.style.fontSize = titSz + 'px'; });
+        grid.querySelectorAll('.proj-summary').forEach(s => {
+          s.style.padding  = `${pad * 0.5}px ${pad}px`;
+          s.style.fontSize = sumSz + 'px';
+        });
+        return;
+      }
+
+      const MARS_OPEN          = 340;
+      const MARS_RIGHT_MARGIN  = W * 0.05;
+      const LEFT_MARGIN        = W * 0.02 + 140;
+      const GRID_GAP_FROM_MARS = 60;
+
+      const gridW = W - LEFT_MARGIN - MARS_RIGHT_MARGIN - MARS_OPEN - GRID_GAP_FROM_MARS;
+      const gridH = H * 0.84;
+
+      const cols = gridW < 380 ? 1 : 2;
+      cardH = (gridH - (cols === 1 ? 8 : 4) * GAP) / (cols === 1 ? 9 : 5);
+
+      grid.style.width               = gridW + 'px';
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.style.gridAutoRows        = cardH + 'px';
+
+
+      const pad   = cardH * 0.10;
+      const numSz = Math.max(10, cardH * 0.30);
+      const titSz = Math.max(9,  cardH * 0.11 + 7);
+      const sumSz = Math.max(8,  cardH * 0.10);
+      allBtns.forEach(b => {
+        b.style.borderRadius = (cardH * 0.08) + 'px';
+      });
+      grid.querySelectorAll('.proj-top').forEach(t => {
+        t.style.padding = `${pad}px ${pad}px ${pad * 0.4}px`;
+      });
+      grid.querySelectorAll('.proj-num').forEach(n => {
+        n.style.fontSize = numSz + 'px';
+      });
+      grid.querySelectorAll('.proj-title').forEach(t => {
+        t.style.fontSize = titSz + 'px';
+      });
+      grid.querySelectorAll('.proj-summary').forEach(s => {
+        s.style.padding  = `${pad * 0.6}px ${pad}px`;
+        s.style.fontSize = (sumSz + 2) + 'px';
+      });
+    }
+    sizeGrid();
+
+    // ── Babylon.js ────────────────────────────────────────────────────────────
+    const canvas = document.getElementById('mars-canvas');
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, adaptToDeviceRatio: true });
+    const scene  = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+    const camera = new BABYLON.ArcRotateCamera('cam', -Math.PI / 2, Math.PI / 2, 3, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerBetaLimit = Math.PI / 2;
+    camera.upperBetaLimit = Math.PI / 2;
+    camera.inputs.removeByType('ArcRotateCameraMouseWheelInput');
+    camera.inputs.removeByType('ArcRotateCameraMultiTouchInput');
+    canvas.addEventListener('wheel',     e => e.preventDefault(), { passive: false });
+    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+    new BABYLON.HemisphericLight('hem', new BABYLON.Vector3(0, 1, 0), scene).intensity = 1.2;
+    const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-1, -1, -2), scene);
+    sun.intensity = 2;
+
+    BABYLON.SceneLoader.ImportMeshAsync('', 'assets/', 'mars.glb', scene).then(({ meshes }) => {
+      const root = meshes[0];
+      const { min, max } = root.getHierarchyBoundingVectors(true);
+      const size = max.subtract(min);
+      camera.target = min.add(size.scale(0.5));
+      camera.radius = Math.max(size.x, size.y, size.z) * 1.6;
+
+      let spinning = true;
+      const FAST = 0.06, SLOW = 0.0015, DECAY = 2200, t0 = performance.now();
+      scene.registerBeforeRender(() => {
+        if (!spinning) return;
+        const p = Math.min((performance.now() - t0) / DECAY, 1);
+        camera.alpha += FAST + (SLOW - FAST) * p;
+      });
+
+      let isOpen = false, pointerStart = null, hasDragged = false;
+
+      canvas.addEventListener('pointerdown', e => {
+        pointerStart = { x: e.clientX, y: e.clientY };
+        hasDragged = false;
+        spinning = false;
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 5) {
+          if (!hasDragged) toggleOpen();
+          hasDragged = true;
+        }
+      });
+      canvas.addEventListener('pointerup', () => {
+        spinning = true;
+        pointerStart = null;
+      });
+
+      function toggleOpen() {
+        isOpen = !isOpen;
+        canvas.classList.toggle('open', isOpen);
+        canvas.style.cursor = isOpen ? 'grab' : 'pointer';
+
+        const hint = document.getElementById('mars-hint');
+        if (isOpen) {
+          hint.classList.add('hidden');
+        } else {
+          hint.classList.remove('hidden');
+          hint.style.animation = 'none';
+          hint.offsetWidth;
+          hint.style.animation = 'typewriter-loop 5s infinite';
+        }
+
+        document.getElementById('mars-label').classList.toggle('visible', isOpen);
+        document.getElementById('back-link').classList.toggle('visible', isOpen);
+        setTimeout(() => engine.resize(), 750);
+
+        if (isOpen) {
+          // Reset to grid view on open
+          if (currentProject !== null) {
+            projDetail.classList.remove('visible');
+            currentProject = null;
+          }
+          activeCategory = 'ALL';
+          filterBar.querySelectorAll('.side-pill').forEach(p =>
+            p.classList.toggle('active', p.dataset.cat === 'ALL'));
+          allBtns.forEach(btn => { btn.style.display = ''; });
+          allBtns.forEach((btn, i) => {
+            btn.classList.remove('visible');
+            setTimeout(() => btn.classList.add('visible'), 80 + i * 50);
+          });
+          grid.style.pointerEvents = 'all';
+          filterBar.classList.add('visible');
+        } else {
+          // Close: bypass CSS transitions so cards vanish instantly behind Mars
+          const projWrap = document.getElementById('proj-wrap');
+          projWrap.style.transition = 'none';
+          projWrap.style.opacity = '0';
+          projWrap.style.pointerEvents = 'none';
+          filterBar.style.transition = 'none';
+          filterBar.style.opacity = '0';
+          filterBar.classList.remove('visible');
+          projDetail.classList.remove('visible');
+          currentProject = null;
+          grid.style.pointerEvents = 'none';
+          allBtns.forEach(btn => btn.classList.remove('visible'));
+          // Restore styles after Mars settles; reset filter state without showing cards
+          setTimeout(() => {
+            projWrap.style.transition = '';
+            projWrap.style.opacity = '';
+            filterBar.style.transition = '';
+            filterBar.style.opacity = '';
+            activeCategory = 'ALL';
+            if (filterTimer) clearTimeout(filterTimer);
+            filterBar.querySelectorAll('.side-pill').forEach(p =>
+              p.classList.toggle('active', p.dataset.cat === 'ALL'));
+            allBtns.forEach(btn => { btn.style.display = ''; btn.classList.remove('visible'); });
+          }, 800);
+        }
+      }
+    });
+
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener('resize', () => { engine.resize(); sizeGrid(); sizeDetail(); });
+  </script>
+</body>
+</html>
